@@ -1,4 +1,4 @@
-# MakeCode Arcade Video + Audio Converter
+# MakeCode Arcade Video + Audio Converter (and Images!)
 
 A browser-based tool that converts video and audio files into MakeCode Arcade format, with 16-color palette quantization and polyphonic audio synthesis using spectrogram analysis.
 
