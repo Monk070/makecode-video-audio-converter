@@ -6,6 +6,10 @@ A browser-based tool that converts video and audio files into MakeCode Arcade fo
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![No Dependencies](https://img.shields.io/badge/dependencies-none-success)
 
+## 😎 V1.2 Update
+
+Now handles images too. Cool!
+
 ## ✨ Features
 
 ### 🎬 Video Conversion
