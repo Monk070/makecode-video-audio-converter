@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MakeCode Arcade Video + Audio + Image Converter</title>
+    <title>MakeCode Arcade Video + Audio Converter</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -91,45 +91,6 @@
             letter-spacing: 1px;
         }
 
-        /* Mode Toggle */
-        .mode-toggle {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .mode-btn {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            padding: 12px 24px;
-            background: var(--arcade-dark);
-            border: 3px solid var(--panel-border);
-            border-radius: 8px;
-            color: var(--text-dim);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .mode-btn:hover {
-            border-color: var(--arcade-purple);
-        }
-
-        .mode-btn.active {
-            background: linear-gradient(135deg, var(--arcade-purple) 0%, var(--arcade-dark) 100%);
-            border-color: var(--arcade-pink);
-            color: var(--arcade-pink);
-            box-shadow: 0 0 15px rgba(255, 147, 196, 0.3);
-        }
-
-        .mode-content {
-            display: none;
-        }
-
-        .mode-content.active {
-            display: block;
-        }
-
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -166,10 +127,6 @@
             background: linear-gradient(90deg, transparent, var(--arcade-orange), transparent);
         }
 
-        .panel.image-panel::before {
-            background: linear-gradient(90deg, transparent, var(--arcade-pink), transparent);
-        }
-
         .panel-title {
             font-family: 'Press Start 2P', cursive;
             font-size: 10px;
@@ -188,10 +145,6 @@
         .panel-title.audio::before {
             content: '♪';
             color: var(--arcade-orange);
-        }
-
-        .panel-title.image::before {
-            content: '🖼';
         }
 
         /* Upload Zone */
@@ -229,7 +182,7 @@
             color: var(--text-dim);
         }
 
-        #videoInput, #imageInput {
+        #videoInput {
             display: none;
         }
 
@@ -257,49 +210,6 @@
             font-size: 9px;
             color: var(--text-dim);
             text-align: center;
-        }
-
-        /* Image Preview */
-        .image-preview-container {
-            position: relative;
-            background: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 15px;
-            min-height: 200px;
-        }
-
-        .image-preview-container img {
-            max-width: 100%;
-            max-height: 400px;
-            image-rendering: pixelated;
-        }
-
-        .image-preview-wrapper {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .image-preview-box {
-            text-align: center;
-        }
-
-        .image-preview-box label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 9px;
-        }
-
-        .image-preview-box canvas {
-            border: 2px solid var(--panel-border);
-            border-radius: 4px;
-            image-rendering: pixelated;
         }
 
         /* Time Range Selector */
@@ -364,10 +274,6 @@
 
         label.audio-label {
             color: var(--arcade-orange);
-        }
-
-        label.image-label {
-            color: var(--arcade-pink);
         }
 
         input[type="number"],
@@ -489,24 +395,6 @@
             cursor: not-allowed;
         }
 
-        .btn-pink {
-            background: linear-gradient(180deg, var(--arcade-pink) 0%, #d47a9f 100%);
-            color: var(--arcade-black);
-            box-shadow: 0 4px 0 #a65c7a;
-        }
-
-        .btn-pink:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 #a65c7a;
-        }
-
-        .btn-pink:disabled {
-            background: #444;
-            box-shadow: 0 4px 0 #333;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
         .button-row {
             display: flex;
             gap: 8px;
@@ -610,53 +498,71 @@
             word-break: break-all;
         }
 
-        /* Frame Preview Grid */
+        .output-code::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .output-code::-webkit-scrollbar-track {
+            background: var(--arcade-black);
+        }
+
+        .output-code::-webkit-scrollbar-thumb {
+            background: var(--arcade-purple);
+            border-radius: 3px;
+        }
+
+        /* Frame preview */
         .frame-preview-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-            gap: 4px;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 6px;
             margin-top: 10px;
             max-height: 150px;
             overflow-y: auto;
-            padding: 5px;
+            padding: 8px;
             background: rgba(0,0,0,0.3);
-            border-radius: 6px;
+            border-radius: 8px;
         }
 
         .frame-thumb {
+            aspect-ratio: 4/3;
+            background: #000;
+            border-radius: 3px;
+            overflow: hidden;
+            border: 2px solid var(--panel-border);
+        }
+
+        .frame-thumb img {
             width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            border-radius: 2px;
-            image-rendering: pixelated;
-            border: 1px solid var(--panel-border);
+            height: 100%;
+            object-fit: contain;
         }
 
         /* Spectrogram */
         .spectrogram-container {
             background: var(--arcade-black);
             border: 2px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 10px;
+            border-radius: 8px;
+            height: 100px;
             margin-top: 10px;
-            min-height: 100px;
+            overflow: hidden;
         }
 
         #spectrogramCanvas {
             width: 100%;
-            height: 100px;
-            display: block;
+            height: 100%;
         }
 
+        /* Frequency buckets visualization */
         .freq-buckets {
             display: flex;
             gap: 2px;
+            margin-top: 10px;
+            height: 60px;
             align-items: flex-end;
-            height: 52px;
-            padding: 5px;
             background: rgba(0,0,0,0.3);
-            border-radius: 4px;
-            margin-top: 8px;
+            border-radius: 8px;
+            padding: 8px;
         }
 
         .freq-bucket {
@@ -736,7 +642,7 @@
             border-top: 2px solid var(--panel-border);
         }
 
-        #processingCanvas, #imageProcessingCanvas {
+        #processingCanvas {
             display: none;
         }
 
@@ -766,6 +672,129 @@
             color: var(--arcade-yellow);
         }
 
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            padding: 12px 24px;
+            background: var(--arcade-dark);
+            border: 3px solid var(--panel-border);
+            border-radius: 8px;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--arcade-purple);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--arcade-purple) 0%, var(--arcade-dark) 100%);
+            border-color: var(--arcade-pink);
+            color: var(--arcade-pink);
+            box-shadow: 0 0 15px rgba(255, 147, 196, 0.3);
+        }
+
+        .mode-content {
+            display: none;
+        }
+
+        .mode-content.active {
+            display: block;
+        }
+
+        /* Image Mode Styles */
+        .panel.image-panel::before {
+            background: linear-gradient(90deg, transparent, var(--arcade-pink), transparent);
+        }
+
+        .panel-title.image::before {
+            content: '🖼';
+        }
+
+        label.image-label {
+            color: var(--arcade-pink);
+        }
+
+        .btn-pink {
+            background: linear-gradient(180deg, var(--arcade-pink) 0%, #d47a9f 100%);
+            color: var(--arcade-black);
+            box-shadow: 0 4px 0 #a65c7a;
+        }
+
+        .btn-pink:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #a65c7a;
+        }
+
+        .btn-pink:disabled {
+            background: #444;
+            box-shadow: 0 4px 0 #333;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .image-preview-container {
+            position: relative;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            min-height: 200px;
+        }
+
+        .image-preview-container img {
+            max-width: 100%;
+            max-height: 400px;
+            image-rendering: pixelated;
+        }
+
+        .image-preview-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .image-preview-box {
+            text-align: center;
+        }
+
+        .image-preview-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 9px;
+        }
+
+        .image-preview-box canvas {
+            border: 2px solid var(--panel-border);
+            border-radius: 4px;
+            image-rendering: pixelated;
+        }
+
+        .image-size-info {
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .image-size-info strong {
+            color: var(--arcade-cyan);
+        }
+
         .info-box.pink {
             background: rgba(255, 147, 196, 0.1);
             border-color: var(--arcade-pink);
@@ -776,16 +805,8 @@
             color: #fff;
         }
 
-        /* Image size info */
-        .image-size-info {
-            font-size: 10px;
-            color: var(--text-dim);
-            margin-top: 8px;
-            text-align: center;
-        }
-
-        .image-size-info strong {
-            color: var(--arcade-cyan);
+        #imageProcessingCanvas {
+            display: none;
         }
     </style>
 </head>
@@ -804,206 +825,223 @@
 
         <!-- ==================== VIDEO/AUDIO MODE ==================== -->
         <div class="mode-content active" id="videoMode">
-            <div class="main-grid">
-                <!-- Left Panel: Input -->
-                <div class="panel">
-                    <h2 class="panel-title">Media Input</h2>
+        <div class="main-grid">
+            <!-- Left Panel: Input -->
+            <div class="panel">
+                <h2 class="panel-title">Media Input</h2>
+                
+                <div class="upload-zone" id="uploadZone">
+                    <span class="upload-icon">🎬</span>
+                    <p class="upload-text">Drop Video or Audio Here</p>
+                    <p class="upload-hint">MP4, WebM, MOV, MP3, WAV</p>
+                </div>
+                <input type="file" id="videoInput" accept="video/*,audio/*,.mp3,.wav,.ogg,.m4a">
+
+                <div class="preview-container">
+                    <video id="videoPreview" controls></video>
+                    <audio id="audioPreview" controls style="display: none; width: 100%;"></audio>
+                    <div class="preview-placeholder" id="previewPlaceholder">
+                        No media loaded
+                    </div>
+                </div>
+                
+                <div class="button-row" id="extractAudioRow" style="display: none; margin-bottom: 10px;">
+                    <button class="btn btn-secondary" id="extractAudioBtn" style="flex: 1;">
+                        💾 Export as WAV
+                    </button>
+                    <button class="btn btn-primary" id="convertAudioOnlyBtn" style="flex: 1;">
+                        🎵 Convert Audio Only
+                    </button>
+                </div>
+
+                <div class="time-range-container" id="timeRangeContainer" style="display: none;">
+                    <div class="time-range-bar">
+                        <div class="time-range-selected" id="timeRangeSelected"></div>
+                    </div>
+                    <div class="time-range-labels">
+                        <span id="timeRangeStart">0:00</span>
+                        <span id="timeRangeInfo">Converting 0s - 10s</span>
+                        <span id="timeRangeEnd">0:00</span>
+                    </div>
+                </div>
+
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label>Start Time (s)</label>
+                        <input type="number" id="startTime" value="0" min="0" step="0.1">
+                    </div>
+                    <div class="control-group">
+                        <label>Duration (s)</label>
+                        <input type="number" id="duration" value="10" min="1" max="60">
+                    </div>
+                    <div class="control-group">
+                        <label>Width (px)</label>
+                        <input type="number" id="outputWidth" value="160" min="8" max="320">
+                    </div>
+                    <div class="control-group">
+                        <label>Height (px)</label>
+                        <input type="number" id="outputHeight" value="120" min="8" max="240">
+                    </div>
+                    <div class="control-group">
+                        <label>Video FPS</label>
+                        <input type="number" id="frameRate" value="10" min="1" max="30">
+                    </div>
+                    <div class="control-group">
+                        <label>Max Frames</label>
+                        <input type="number" id="maxFrames" value="100" min="1" max="500">
+                    </div>
+                    <div class="control-group">
+                        <label>Dithering</label>
+                        <select id="ditherMode">
+                            <option value="none">None</option>
+                            <option value="floyd">Floyd-Steinberg</option>
+                            <option value="ostromoukhov">Ostromoukhov</option>
+                            <option value="ordered">Ordered</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Scale Mode</label>
+                        <select id="scaleMode">
+                            <option value="fit">Fit</option>
+                            <option value="fill">Fill</option>
+                            <option value="stretch">Stretch</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lockAspect" checked>
+                    <label for="lockAspect">Lock 4:3 aspect ratio</label>
+                    <button class="btn btn-secondary" id="setStartBtn" style="margin-left: auto; padding: 6px 10px; font-size: 8px;" disabled title="Set start time to current video position">
+                        ⏺ Set Start
+                    </button>
+                    <button class="btn btn-secondary" id="seekToStartBtn" style="padding: 6px 10px; font-size: 8px;" disabled title="Seek video to selected start time">
+                        ⏮ Preview
+                    </button>
+                </div>
+
+                <!-- Audio Section -->
+                <div class="audio-section">
+                    <h3 class="panel-title audio">Spectrogram Audio</h3>
                     
-                    <div class="upload-zone" id="uploadZone">
-                        <span class="upload-icon">🎬</span>
-                        <p class="upload-text">Drop Video or Audio Here</p>
-                        <p class="upload-hint">MP4, WebM, MOV, MP3, WAV</p>
+                    <div class="info-box">
+                        <strong>Polyphonic Mode:</strong> Uses 20 frequency bands with queuePlayInstructions() for realistic audio reproduction.
+                        <br><br>
+                        <strong>⚠️ Note:</strong> Audio processing can take 10-30+ seconds depending on clip length. Keep clips under 10s for best results. Check browser console (F12) for progress.
                     </div>
-                    <input type="file" id="videoInput" accept="video/*,audio/*,.mp3,.wav,.ogg,.m4a">
 
-                    <div class="preview-container">
-                        <video id="videoPreview" controls></video>
-                        <audio id="audioPreview" controls style="display: none; width: 100%;"></audio>
-                        <div class="preview-placeholder" id="previewPlaceholder">
-                            No media loaded
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="extractAudio" checked>
+                        <label for="extractAudio">Extract audio (spectrogram method)</label>
+                    </div>
+
+                    <div class="controls-grid" style="margin-top: 12px;">
+                        <div class="control-group">
+                            <label class="audio-label">Period (ms)</label>
+                            <input type="number" id="audioPeriod" value="25" min="10" max="100">
                         </div>
+                        <div class="control-group">
+                            <label class="audio-label">Gain</label>
+                            <select id="audioGain">
+                                <option value="1.5">Quiet (1.5x)</option>
+                                <option value="2.5" selected>Normal (2.5x)</option>
+                                <option value="4.0">Loud (4x)</option>
+                                <option value="6.0">Very Loud (6x)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="videoOnly">
+                        <label for="videoOnly">Video frames only (no audio)</label>
+                    </div>
+                </div>
+
+                <div class="button-row">
+                    <button class="btn btn-primary" id="convertBtn" disabled>
+                        ▶ Convert
+                    </button>
+                    <button class="btn btn-secondary" id="previewFrameBtn" disabled>
+                        👁 Preview
+                    </button>
+                </div>
+
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Processing...</p>
+                    <button class="btn btn-secondary" id="skipAudioBtn" style="display: none; margin-top: 10px; width: 100%;">
+                        ⏭ Skip Audio Processing
+                    </button>
+                </div>
+
+                <div class="status-message" id="statusMessage"></div>
+            </div>
+
+            <!-- Right Panel: Output -->
+            <div class="panel">
+                <h2 class="panel-title">Output</h2>
+
+                <div>
+                    <label>MakeCode Palette</label>
+                    <div class="palette-preview" id="palettePreview"></div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label>Converted Frames</label>
+                    <div class="frame-preview-grid" id="framePreviewGrid">
+                        <p style="color: var(--text-dim); font-size: 9px; grid-column: 1/-1; text-align: center; padding: 10px;">
+                            Frames appear after conversion
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label class="audio-label">Audio Spectrogram</label>
+                    <div class="spectrogram-container">
+                        <canvas id="spectrogramCanvas"></canvas>
+                    </div>
+                    <label class="audio-label" style="margin-top: 10px; display: block;">Frequency Bands (20 channels)</label>
+                    <div class="freq-buckets" id="freqBuckets">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <div class="output-container">
+                    <div class="output-tabs">
+                        <button class="tab-btn active" data-tab="combined">Combined</button>
+                        <button class="tab-btn" data-tab="video">Video</button>
+                        <button class="tab-btn" data-tab="audio">Audio</button>
+                    </div>
+
+                    <div class="output-header">
+                        <label>TypeScript Output</label>
+                        <span class="output-stats" id="outputStats"></span>
                     </div>
                     
-                    <div class="button-row" id="extractAudioRow" style="display: none; margin-bottom: 10px;">
-                        <button class="btn btn-secondary" id="extractAudioBtn" style="flex: 1;">
-                            💾 Export as WAV
-                        </button>
-                        <button class="btn btn-primary" id="convertAudioOnlyBtn" style="flex: 1;">
-                            🎵 Convert Audio Only
-                        </button>
+                    <div id="tab-combined" class="tab-content active">
+                        <div class="output-code" id="outputCodeCombined">// Combined output will appear here</div>
                     </div>
-
-                    <div class="time-range-container" id="timeRangeContainer" style="display: none;">
-                        <div class="time-range-bar">
-                            <div class="time-range-selected" id="timeRangeSelected"></div>
-                        </div>
-                        <div class="time-range-labels">
-                            <span id="timeRangeStart">0:00</span>
-                            <span id="timeRangeInfo">Converting 0s - 10s</span>
-                            <span id="timeRangeEnd">0:00</span>
-                        </div>
+                    <div id="tab-video" class="tab-content">
+                        <div class="output-code" id="outputCodeVideo">// Video output will appear here</div>
                     </div>
-
-                    <div class="controls-grid">
-                        <div class="control-group">
-                            <label>Start Time (s)</label>
-                            <div style="display: flex; gap: 4px;">
-                                <input type="number" id="startTime" value="0" min="0" step="0.1" style="flex: 1;">
-                                <button class="btn btn-secondary" id="setStartBtn" title="Set to current time" style="padding: 8px 10px;">📍</button>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label>Duration (s)</label>
-                            <div style="display: flex; gap: 4px;">
-                                <input type="number" id="duration" value="10" min="1" max="60" step="1" style="flex: 1;">
-                                <button class="btn btn-secondary" id="seekToStartBtn" title="Seek to start" style="padding: 8px 10px;">⏮</button>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label>Output Width</label>
-                            <input type="number" id="outputWidth" value="80" min="16" max="160">
-                        </div>
-                        <div class="control-group">
-                            <label>Output Height</label>
-                            <input type="number" id="outputHeight" value="60" min="16" max="120">
-                        </div>
-                        <div class="control-group">
-                            <label>Frame Rate</label>
-                            <select id="frameRate">
-                                <option value="5">5 fps</option>
-                                <option value="10" selected>10 fps</option>
-                                <option value="15">15 fps</option>
-                                <option value="20">20 fps</option>
-                            </select>
-                        </div>
-                        <div class="control-group">
-                            <label>Max Frames</label>
-                            <input type="number" id="maxFrames" value="100" min="1" max="500">
-                        </div>
-                        <div class="control-group">
-                            <label>Dithering</label>
-                            <select id="ditherMode">
-                                <option value="floyd">Floyd-Steinberg</option>
-                                <option value="ostromoukhov">Ostromoukhov</option>
-                                <option value="ordered">Ordered (Bayer)</option>
-                                <option value="none">None</option>
-                            </select>
-                        </div>
-                        <div class="control-group">
-                            <label>Scale Mode</label>
-                            <select id="scaleMode">
-                                <option value="fill">Fill (crop)</option>
-                                <option value="fit">Fit (letterbox)</option>
-                                <option value="stretch">Stretch</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="audio-section">
-                        <div class="controls-grid">
-                            <div class="control-group">
-                                <label class="audio-label">Audio Period (ms)</label>
-                                <input type="number" id="audioPeriod" value="50" min="20" max="200">
-                            </div>
-                            <div class="control-group">
-                                <label class="audio-label">Audio Gain</label>
-                                <input type="number" id="audioGain" value="1.0" min="0.1" max="5.0" step="0.1">
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="extractAudio" checked>
-                            <label for="extractAudio">Include audio (20-channel polyphonic)</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="videoOnly">
-                            <label for="videoOnly">Video frames only (faster)</label>
-                        </div>
+                    <div id="tab-audio" class="tab-content">
+                        <div class="output-code" id="outputCodeAudio">// Audio output will appear here</div>
                     </div>
 
                     <div class="button-row">
-                        <button class="btn btn-primary" id="convertBtn" disabled>
-                            ⚡ Convert
+                        <button class="btn btn-copy" id="copyBtn" disabled>
+                            📋 Copy
                         </button>
-                        <button class="btn btn-secondary" id="previewFrameBtn" disabled>
-                            👁 Preview Frame
+                        <button class="btn btn-secondary" id="downloadBtn" disabled>
+                            💾 Download
                         </button>
-                        <button class="btn btn-secondary" id="skipAudioBtn" style="display: none;">
-                            ⏭ Skip Audio
-                        </button>
-                    </div>
-
-                    <div class="progress-container" id="progressContainer">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                        </div>
-                        <p class="progress-text" id="progressText">Processing...</p>
-                    </div>
-
-                    <div class="status-message" id="statusMessage"></div>
-                </div>
-
-                <!-- Right Panel: Output -->
-                <div class="panel audio-panel">
-                    <h2 class="panel-title audio">Output</h2>
-
-                    <label>Color Palette (16 colors)</label>
-                    <div class="palette-preview" id="palettePreview">
-                        <!-- Will be populated by JS -->
-                    </div>
-
-                    <label style="margin-top: 15px; display: block;">Frame Preview</label>
-                    <div class="frame-preview-grid" id="framePreviewGrid">
-                        <p style="grid-column: 1/-1; text-align: center; color: var(--text-dim); font-size: 10px;">
-                            Frames will appear here after conversion
-                        </p>
-                    </div>
-
-                    <div style="margin-top: 15px;">
-                        <label class="audio-label">Audio Spectrogram</label>
-                        <div class="spectrogram-container">
-                            <canvas id="spectrogramCanvas"></canvas>
-                        </div>
-                        <label class="audio-label" style="margin-top: 10px; display: block;">Frequency Bands (20 channels)</label>
-                        <div class="freq-buckets" id="freqBuckets">
-                            <!-- Will be populated by JS -->
-                        </div>
-                    </div>
-
-                    <div class="output-container">
-                        <div class="output-tabs">
-                            <button class="tab-btn active" data-tab="combined">Combined</button>
-                            <button class="tab-btn" data-tab="video">Video</button>
-                            <button class="tab-btn" data-tab="audio">Audio</button>
-                        </div>
-
-                        <div class="output-header">
-                            <label>TypeScript Output</label>
-                            <span class="output-stats" id="outputStats"></span>
-                        </div>
-                        
-                        <div id="tab-combined" class="tab-content active">
-                            <div class="output-code" id="outputCodeCombined">// Combined output will appear here</div>
-                        </div>
-                        <div id="tab-video" class="tab-content">
-                            <div class="output-code" id="outputCodeVideo">// Video output will appear here</div>
-                        </div>
-                        <div id="tab-audio" class="tab-content">
-                            <div class="output-code" id="outputCodeAudio">// Audio output will appear here</div>
-                        </div>
-
-                        <div class="button-row">
-                            <button class="btn btn-copy" id="copyBtn" disabled>
-                                📋 Copy
-                            </button>
-                            <button class="btn btn-secondary" id="downloadBtn" disabled>
-                                💾 Download
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div><!-- End videoMode -->
 
         <!-- ==================== IMAGE MODE ==================== -->
         <div class="mode-content" id="imageMode">
@@ -1017,7 +1055,7 @@
                         <p class="upload-text">Drop Image Here</p>
                         <p class="upload-hint">PNG, JPG, GIF, WebP</p>
                     </div>
-                    <input type="file" id="imageInput" accept="image/*">
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;">
 
                     <div class="image-preview-container" id="imagePreviewContainer">
                         <div class="preview-placeholder" id="imagePlaceholder">
@@ -1038,17 +1076,17 @@
                         <div class="control-group">
                             <label class="image-label">Dithering</label>
                             <select id="imageDitherMode">
+                                <option value="none" selected>None</option>
                                 <option value="floyd">Floyd-Steinberg</option>
                                 <option value="ostromoukhov">Ostromoukhov</option>
-                                <option value="ordered">Ordered (Bayer)</option>
-                                <option value="none" selected>None</option>
+                                <option value="ordered">Ordered</option>
                             </select>
                         </div>
                         <div class="control-group">
                             <label class="image-label">Scale Mode</label>
                             <select id="imageScaleMode">
-                                <option value="fill">Fill (crop)</option>
                                 <option value="fit" selected>Fit (letterbox)</option>
+                                <option value="fill">Fill (crop)</option>
                                 <option value="stretch">Stretch</option>
                             </select>
                         </div>
@@ -1082,19 +1120,17 @@
                     <h2 class="panel-title image">Sprite Output</h2>
 
                     <label class="image-label">Color Palette (16 colors)</label>
-                    <div class="palette-preview" id="imagePalettePreview">
-                        <!-- Will be populated by JS -->
-                    </div>
+                    <div class="palette-preview" id="imagePalettePreview"></div>
 
                     <label class="image-label" style="margin-top: 15px; display: block;">Preview</label>
                     <div class="image-preview-wrapper" id="spritePreviewArea">
                         <div class="image-preview-box">
                             <label class="image-label">Original (scaled)</label>
-                            <canvas id="originalPreviewCanvas"></canvas>
+                            <canvas id="originalPreviewCanvas" width="64" height="64"></canvas>
                         </div>
                         <div class="image-preview-box">
                             <label class="image-label">Converted</label>
-                            <canvas id="convertedPreviewCanvas"></canvas>
+                            <canvas id="convertedPreviewCanvas" width="64" height="64"></canvas>
                         </div>
                     </div>
 
@@ -1131,7 +1167,7 @@ let mySprite = sprites.create(img`
                     </div>
                 </div>
             </div>
-        </div>
+        </div><!-- End imageMode -->
 
         <footer>
             MakeCode Arcade Converter | Audio method based on <a href="https://github.com/HomeAssistantTycoon/Audio-to-MakeCode-Arcade" target="_blank">HomeAssistantTycoon's work</a>
@@ -1144,7 +1180,7 @@ let mySprite = sprites.create(img`
     <script>
         // MakeCode Arcade 16-color palette
         const MAKECODE_PALETTE = [
-            { char: '.', name: 'Transparent', r: 0, g: 0, b: 0, a: 0 },
+            { char: '0', name: 'Transparent', r: 0, g: 0, b: 0, a: 0 },
             { char: '1', name: 'White', r: 255, g: 255, b: 255, a: 255 },
             { char: '2', name: 'Red', r: 255, g: 33, b: 33, a: 255 },
             { char: '3', name: 'Pink', r: 255, g: 147, b: 196, a: 255 },
@@ -1175,7 +1211,6 @@ let mySprite = sprites.create(img`
 
         // Ostromoukhov's variable coefficients table (SIGGRAPH 2001)
         // Each entry: [coef_right, coef_down_left, coef_down] for intensity level 0-255
-        // Coefficients are scaled - divide by sum to normalize
         const OSTROMOUKHOV_COEFS = [
             [13,0,5],[13,0,5],[21,0,10],[7,0,4],[8,0,5],[47,3,28],[23,3,13],[15,3,8],
             [22,6,11],[43,15,20],[7,3,3],[501,224,211],[249,116,103],[165,80,67],[123,62,49],
@@ -1224,20 +1259,7 @@ let mySprite = sprites.create(img`
             [8,1,0],[7,1,0],[6,1,0],[5,1,0],[4,1,0],[3,1,0],[2,1,0],[1,1,0]
         ];
 
-        // ==================== MODE SWITCHING ====================
-        const modeBtns = document.querySelectorAll('.mode-btn');
-        const modeContents = document.querySelectorAll('.mode-content');
-
-        modeBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                modeBtns.forEach(b => b.classList.remove('active'));
-                modeContents.forEach(c => c.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.mode + 'Mode').classList.add('active');
-            });
-        });
-
-        // ==================== VIDEO/AUDIO MODE ELEMENTS ====================
+        // DOM Elements
         const uploadZone = document.getElementById('uploadZone');
         const videoInput = document.getElementById('videoInput');
         const videoPreview = document.getElementById('videoPreview');
@@ -1276,70 +1298,360 @@ let mySprite = sprites.create(img`
         const maxFrames = document.getElementById('maxFrames');
         const ditherMode = document.getElementById('ditherMode');
         const scaleMode = document.getElementById('scaleMode');
+        const lockAspect = document.getElementById('lockAspect');
+        const extractAudio = document.getElementById('extractAudio');
         const audioPeriod = document.getElementById('audioPeriod');
         const audioGain = document.getElementById('audioGain');
-        const extractAudio = document.getElementById('extractAudio');
         const videoOnly = document.getElementById('videoOnly');
-        const skipAudioBtn = document.getElementById('skipAudioBtn');
 
-        // Output
+        // Output elements
         const outputCodeCombined = document.getElementById('outputCodeCombined');
         const outputCodeVideo = document.getElementById('outputCodeVideo');
         const outputCodeAudio = document.getElementById('outputCodeAudio');
         const outputStats = document.getElementById('outputStats');
 
-        // ==================== IMAGE MODE ELEMENTS ====================
-        const imageUploadZone = document.getElementById('imageUploadZone');
-        const imageInput = document.getElementById('imageInput');
-        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-        const imagePlaceholder = document.getElementById('imagePlaceholder');
-        const imageSizeInfo = document.getElementById('imageSizeInfo');
-        const imageWidth = document.getElementById('imageWidth');
-        const imageHeight = document.getElementById('imageHeight');
-        const imageDitherMode = document.getElementById('imageDitherMode');
-        const imageScaleMode = document.getElementById('imageScaleMode');
-        const keepAspectRatio = document.getElementById('keepAspectRatio');
-        const convertImageBtn = document.getElementById('convertImageBtn');
-        const previewImageBtn = document.getElementById('previewImageBtn');
-        const imageStatusMessage = document.getElementById('imageStatusMessage');
-        const imagePalettePreview = document.getElementById('imagePalettePreview');
-        const originalPreviewCanvas = document.getElementById('originalPreviewCanvas');
-        const convertedPreviewCanvas = document.getElementById('convertedPreviewCanvas');
-        const imageSpriteCode = document.getElementById('imageSpriteCode');
-        const imageOutputStats = document.getElementById('imageOutputStats');
-        const copyImageBtn = document.getElementById('copyImageBtn');
-        const copyRawSpriteBtn = document.getElementById('copyRawSpriteBtn');
-        const downloadImageBtn = document.getElementById('downloadImageBtn');
-        const imageCanvas = document.getElementById('imageProcessingCanvas');
-        const imageCtx = imageCanvas.getContext('2d', { willReadFrequently: true });
-
-        // State
         let convertedFrames = [];
         let audioBuffers = [];
+        let spectrogramData = [];
         let generatedCode = { combined: '', video: '', audio: '' };
         let currentTab = 'combined';
-        let isAudioOnly = false;
-        let audioWorker = null;
-        let spectrogramData = [];
+        let audioContext = null;
         let skipAudioRequested = false;
+        let audioWorker = null;
+        let isAudioOnly = false;
+        let currentMediaFile = null;
+        
+        const skipAudioBtn = document.getElementById('skipAudioBtn');
+        skipAudioBtn.addEventListener('click', () => {
+            skipAudioRequested = true;
+            skipAudioBtn.textContent = 'Skipping...';
+            skipAudioBtn.disabled = true;
+            // Terminate the worker if it's running
+            if (audioWorker) {
+                audioWorker.terminate();
+                audioWorker = null;
+            }
+        });
+        
+        // Extract audio from video as WAV
+        extractAudioBtn.addEventListener('click', async () => {
+            if (!currentMediaFile || isAudioOnly) return;
+            
+            extractAudioBtn.disabled = true;
+            extractAudioBtn.textContent = '⏳ Extracting...';
+            
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                // Fetch and decode audio
+                const response = await fetch(videoPreview.src);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                
+                // Get clip range
+                const clipStart = parseFloat(startTime.value) || 0;
+                const clipDuration = parseFloat(duration.value) || audioBuffer.duration;
+                const clipEnd = Math.min(clipStart + clipDuration, audioBuffer.duration);
+                const actualDuration = clipEnd - clipStart;
+                
+                const startSample = Math.floor(clipStart * audioBuffer.sampleRate);
+                const numSamples = Math.floor(actualDuration * audioBuffer.sampleRate);
+                
+                // Create WAV file
+                const wavBuffer = audioBufferToWav(audioBuffer, startSample, numSamples);
+                const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+                
+                // Download
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const baseName = currentMediaFile.name.replace(/\.[^.]+$/, '');
+                a.download = `${baseName}_audio_${clipStart.toFixed(1)}s-${clipEnd.toFixed(1)}s.wav`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showStatus(`Audio extracted: ${actualDuration.toFixed(1)}s WAV file`, 'success');
+            } catch (err) {
+                console.error('Extract audio error:', err);
+                showStatus('Failed to extract audio: ' + err.message, 'error');
+            } finally {
+                extractAudioBtn.disabled = false;
+                extractAudioBtn.textContent = '🎵 Extract Audio as WAV';
+            }
+        });
+        
+        // Convert AudioBuffer to WAV format
+        function audioBufferToWav(audioBuffer, startSample, numSamples) {
+            const numChannels = audioBuffer.numberOfChannels;
+            const sampleRate = audioBuffer.sampleRate;
+            const format = 1; // PCM
+            const bitDepth = 16;
+            
+            const bytesPerSample = bitDepth / 8;
+            const blockAlign = numChannels * bytesPerSample;
+            
+            const dataSize = numSamples * blockAlign;
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+            
+            // RIFF header
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataSize, true);
+            writeString(view, 8, 'WAVE');
+            
+            // fmt chunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true); // chunk size
+            view.setUint16(20, format, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * blockAlign, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitDepth, true);
+            
+            // data chunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+            
+            // Write samples
+            const channels = [];
+            for (let ch = 0; ch < numChannels; ch++) {
+                channels.push(audioBuffer.getChannelData(ch));
+            }
+            
+            let offset = 44;
+            for (let i = 0; i < numSamples; i++) {
+                const sampleIndex = startSample + i;
+                for (let ch = 0; ch < numChannels; ch++) {
+                    const sample = Math.max(-1, Math.min(1, channels[ch][sampleIndex] || 0));
+                    const intSample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(offset, intSample, true);
+                    offset += 2;
+                }
+            }
+            
+            return buffer;
+        }
+        
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+        
+        // Convert audio only from video (skip video frames)
+        convertAudioOnlyBtn.addEventListener('click', async () => {
+            if (!currentMediaFile || isAudioOnly) return;
+            
+            convertAudioOnlyBtn.disabled = true;
+            convertBtn.disabled = true;
+            extractAudioBtn.disabled = true;
+            progressContainer.classList.add('active');
+            progressFill.style.width = '0%';
+            progressFill.classList.add('audio');
+            
+            const conversionStartTime = performance.now();
+            console.log('=== Starting audio-only conversion from video ===');
+            
+            try {
+                const period = parseInt(audioPeriod.value);
+                const gain = parseFloat(audioGain.value);
+                
+                // Calculate clip boundaries
+                const clipStart = parseFloat(startTime.value) || 0;
+                const clipDuration = parseFloat(duration.value) || 10;
+                const clipEnd = Math.min(clipStart + clipDuration, videoPreview.duration);
+                const actualDuration = clipEnd - clipStart;
+                
+                console.log(`Clip: ${clipStart.toFixed(1)}s to ${clipEnd.toFixed(1)}s (${actualDuration.toFixed(1)}s)`);
+                console.log(`Audio settings: period=${period}ms, gain=${gain}`);
+                
+                // Show skip button
+                skipAudioRequested = false;
+                skipAudioBtn.style.display = 'block';
+                skipAudioBtn.textContent = '⏭ Skip Audio Processing';
+                skipAudioBtn.disabled = false;
+                
+                progressText.textContent = 'Starting audio analysis...';
+                await new Promise(r => setTimeout(r, 10));
+                
+                const audioStartTime = performance.now();
+                audioBuffers = await analyzeAudioSpectrogram(videoPreview, period, gain, clipStart, actualDuration);
+                
+                const audioElapsed = ((performance.now() - audioStartTime) / 1000).toFixed(1);
+                console.log(`Audio analysis completed in ${audioElapsed}s`);
+                
+                // Hide skip button
+                skipAudioBtn.style.display = 'none';
+                
+                drawSpectrogram(spectrogramData);
+                
+                // Update frequency bucket visualization
+                if (spectrogramData.length > 0) {
+                    const sampleAmps = FREQUENCY_BUCKETS.map((_, i) => {
+                        let sum = 0;
+                        for (const frame of spectrogramData) {
+                            if (frame[i * 5]) sum += frame[i * 5];
+                        }
+                        return sum / spectrogramData.length;
+                    });
+                    updateFreqBuckets(sampleAmps);
+                }
+                
+                // Generate audio-only code
+                convertedFrames = [];
+                generatedCode.video = '// No video frames - audio only conversion';
+                generatedCode.audio = generateAudioCode(audioBuffers, period);
+                generatedCode.combined = generatedCode.audio;
+                
+                outputCodeCombined.textContent = generatedCode.combined;
+                outputCodeVideo.textContent = generatedCode.video;
+                outputCodeAudio.textContent = generatedCode.audio;
+                
+                const codeSize = new Blob([generatedCode.audio]).size;
+                outputStats.textContent = `Audio only | 20 channels | ${(codeSize / 1024).toFixed(1)} KB`;
+                
+                // Switch to audio tab
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector('[data-tab="audio"]').classList.add('active');
+                document.getElementById('tab-audio').classList.add('active');
+                currentTab = 'audio';
+                
+                copyBtn.disabled = false;
+                downloadBtn.disabled = false;
+                
+                const totalElapsed = ((performance.now() - conversionStartTime) / 1000).toFixed(1);
+                console.log(`=== Audio-only conversion complete in ${totalElapsed}s ===`);
+                
+                showStatus(`Done in ${totalElapsed}s! Polyphonic audio generated (20 channels)`, 'success');
+                
+            } catch (error) {
+                if (error.message === 'Skipped by user') {
+                    showStatus('Audio conversion skipped', 'info');
+                } else {
+                    showStatus(`Error: ${error.message}`, 'error');
+                    console.error(error);
+                }
+            }
+            
+            skipAudioBtn.style.display = 'none';
+            progressContainer.classList.remove('active');
+            convertAudioOnlyBtn.disabled = false;
+            convertBtn.disabled = false;
+            extractAudioBtn.disabled = false;
+        });
 
-        // Image state
-        let loadedImage = null;
-        let originalImageWidth = 0;
-        let originalImageHeight = 0;
-        let generatedSpriteCode = '';
-        let generatedRawSprite = '';
-
-        // ==================== SHARED UTILITY FUNCTIONS ====================
-
-        function showStatus(message, type, elementId = 'statusMessage') {
-            const el = document.getElementById(elementId);
-            el.textContent = message;
-            el.className = 'status-message ' + type;
-            setTimeout(() => { el.className = 'status-message'; }, 5000);
+        // Initialize frequency bucket visualization
+        function initFreqBuckets() {
+            freqBuckets.innerHTML = '';
+            for (let i = 0; i < FREQUENCY_BUCKETS.length; i++) {
+                const div = document.createElement('div');
+                div.className = 'freq-bucket';
+                div.style.height = '2px';
+                div.title = `${i > 0 ? FREQUENCY_BUCKETS[i-1] : 0}-${FREQUENCY_BUCKETS[i]} Hz`;
+                freqBuckets.appendChild(div);
+            }
         }
 
-        // Color distance using weighted Euclidean
+        // Update frequency bucket visualization
+        function updateFreqBuckets(amplitudes) {
+            const buckets = freqBuckets.children;
+            const maxAmp = Math.max(...amplitudes, 0.001);
+            for (let i = 0; i < buckets.length && i < amplitudes.length; i++) {
+                const height = Math.max(2, (amplitudes[i] / maxAmp) * 50);
+                buckets[i].style.height = height + 'px';
+            }
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+                currentTab = btn.dataset.tab;
+            });
+        });
+
+        // Initialize palette preview
+        function initPalettePreview() {
+            palettePreview.innerHTML = '';
+            MAKECODE_PALETTE.forEach((color) => {
+                const div = document.createElement('div');
+                div.className = 'palette-color';
+                div.style.backgroundColor = color.a === 0 
+                    ? 'repeating-conic-gradient(#666 0% 25%, #999 0% 50%) 50% / 6px 6px'
+                    : `rgb(${color.r}, ${color.g}, ${color.b})`;
+                div.dataset.char = color.char;
+                div.title = `${color.char}: ${color.name}`;
+                palettePreview.appendChild(div);
+            });
+        }
+
+        // Format time as M:SS
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Get current media element (video or audio)
+        function getMediaElement() {
+            return isAudioOnly ? audioPreview : videoPreview;
+        }
+
+        // Update time range display
+        function updateTimeRangeDisplay() {
+            const media = getMediaElement();
+            if (!media.duration) return;
+            
+            const totalDuration = media.duration;
+            const clipStart = Math.min(parseFloat(startTime.value) || 0, totalDuration);
+            const clipDur = parseFloat(duration.value) || 10;
+            const clipEnd = Math.min(clipStart + clipDur, totalDuration);
+            const actualDur = clipEnd - clipStart;
+            
+            // Update the visual bar
+            const leftPercent = (clipStart / totalDuration) * 100;
+            const widthPercent = (actualDur / totalDuration) * 100;
+            timeRangeSelected.style.left = `${leftPercent}%`;
+            timeRangeSelected.style.width = `${widthPercent}%`;
+            
+            // Update labels
+            timeRangeStart.textContent = formatTime(0);
+            timeRangeEnd.textContent = formatTime(totalDuration);
+            timeRangeInfo.textContent = `Converting ${formatTime(clipStart)} - ${formatTime(clipEnd)} (${actualDur.toFixed(1)}s)`;
+            
+            timeRangeContainer.style.display = 'block';
+        }
+
+        // Listen for start/duration changes
+        startTime.addEventListener('input', updateTimeRangeDisplay);
+        duration.addEventListener('input', updateTimeRangeDisplay);
+        
+        // Seek to start button
+        const seekToStartBtn = document.getElementById('seekToStartBtn');
+        const setStartBtn = document.getElementById('setStartBtn');
+        
+        seekToStartBtn.addEventListener('click', () => {
+            const start = parseFloat(startTime.value) || 0;
+            getMediaElement().currentTime = start;
+        });
+        
+        setStartBtn.addEventListener('click', () => {
+            const media = getMediaElement();
+            startTime.value = media.currentTime.toFixed(1);
+            updateTimeRangeDisplay();
+            showStatus(`Start time set to ${formatTime(media.currentTime)}`, 'info');
+        });
+
+        // Color distance
         function colorDistance(r1, g1, b1, r2, g2, b2) {
             const rMean = (r1 + r2) / 2;
             const dr = r1 - r2;
@@ -1510,336 +1822,11 @@ let mySprite = sprites.create(img`
                     const i = (y * width + x) * 4;
                     const nearest = findNearestColor(data[i], data[i+1], data[i+2], data[i+3]);
                     result += nearest.char;
-                    if (x < width - 1) result += ' ';
                 }
                 result += '\n';
             }
             return result.trim();
         }
-
-        // Initialize palette preview
-        function initPalettePreview(containerId = 'palettePreview') {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            MAKECODE_PALETTE.forEach((color) => {
-                const div = document.createElement('div');
-                div.className = 'palette-color';
-                div.style.backgroundColor = color.a === 0 
-                    ? 'repeating-conic-gradient(#666 0% 25%, #999 0% 50%) 50% / 6px 6px'
-                    : `rgb(${color.r}, ${color.g}, ${color.b})`;
-                div.dataset.char = color.char;
-                div.title = `${color.char}: ${color.name}`;
-                container.appendChild(div);
-            });
-        }
-
-        // ==================== IMAGE MODE FUNCTIONS ====================
-
-        // Handle image upload
-        imageUploadZone.addEventListener('click', () => imageInput.click());
-        imageUploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            imageUploadZone.classList.add('dragover');
-        });
-        imageUploadZone.addEventListener('dragleave', () => {
-            imageUploadZone.classList.remove('dragover');
-        });
-        imageUploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            imageUploadZone.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                loadImageFile(file);
-            }
-        });
-
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) loadImageFile(file);
-        });
-
-        function loadImageFile(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    loadedImage = img;
-                    originalImageWidth = img.width;
-                    originalImageHeight = img.height;
-
-                    // Show preview
-                    imagePreviewContainer.innerHTML = '';
-                    const previewImg = document.createElement('img');
-                    previewImg.src = e.target.result;
-                    previewImg.style.maxWidth = '100%';
-                    previewImg.style.maxHeight = '300px';
-                    imagePreviewContainer.appendChild(previewImg);
-
-                    imageSizeInfo.innerHTML = `Original size: <strong>${img.width}×${img.height}</strong> pixels`;
-
-                    // Enable buttons
-                    convertImageBtn.disabled = false;
-                    previewImageBtn.disabled = false;
-
-                    showStatus(`Image loaded: ${file.name}`, 'success', 'imageStatusMessage');
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Aspect ratio locking
-        let lastChangedDimension = 'width';
-        imageWidth.addEventListener('input', () => {
-            if (keepAspectRatio.checked && loadedImage) {
-                const aspect = originalImageWidth / originalImageHeight;
-                imageHeight.value = Math.round(parseInt(imageWidth.value) / aspect);
-            }
-            lastChangedDimension = 'width';
-        });
-
-        imageHeight.addEventListener('input', () => {
-            if (keepAspectRatio.checked && loadedImage) {
-                const aspect = originalImageWidth / originalImageHeight;
-                imageWidth.value = Math.round(parseInt(imageHeight.value) * aspect);
-            }
-            lastChangedDimension = 'height';
-        });
-
-        // Process image
-        function processImage(img, targetWidth, targetHeight, dither, scale) {
-            imageCanvas.width = targetWidth;
-            imageCanvas.height = targetHeight;
-            imageCtx.clearRect(0, 0, targetWidth, targetHeight);
-
-            // Fill with transparent
-            imageCtx.fillStyle = 'rgba(0,0,0,0)';
-            imageCtx.fillRect(0, 0, targetWidth, targetHeight);
-
-            const imgAspect = img.width / img.height;
-            const targetAspect = targetWidth / targetHeight;
-            let sx = 0, sy = 0, sw = img.width, sh = img.height;
-            let dx = 0, dy = 0, dw = targetWidth, dh = targetHeight;
-
-            if (scale === 'fit') {
-                if (imgAspect > targetAspect) {
-                    dh = targetWidth / imgAspect;
-                    dy = (targetHeight - dh) / 2;
-                } else {
-                    dw = targetHeight * imgAspect;
-                    dx = (targetWidth - dw) / 2;
-                }
-            } else if (scale === 'fill') {
-                if (imgAspect > targetAspect) {
-                    sw = img.height * targetAspect;
-                    sx = (img.width - sw) / 2;
-                } else {
-                    sh = img.width / targetAspect;
-                    sy = (img.height - sh) / 2;
-                }
-            }
-
-            imageCtx.imageSmoothingEnabled = true;
-            imageCtx.imageSmoothingQuality = 'high';
-            imageCtx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
-
-            let imageData = imageCtx.getImageData(0, 0, targetWidth, targetHeight);
-
-            if (dither === 'floyd') {
-                imageData = applyFloydSteinberg(imageData, targetWidth, targetHeight);
-            } else if (dither === 'ostromoukhov') {
-                imageData = applyOstromoukhov(imageData, targetWidth, targetHeight);
-            } else if (dither === 'ordered') {
-                imageData = applyOrderedDither(imageData, targetWidth, targetHeight);
-            } else {
-                const data = imageData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const nearest = findNearestColor(data[i], data[i+1], data[i+2], data[i+3]);
-                    data[i] = nearest.r;
-                    data[i + 1] = nearest.g;
-                    data[i + 2] = nearest.b;
-                }
-            }
-
-            imageCtx.putImageData(imageData, 0, 0);
-
-            return {
-                imageData,
-                makeCodeString: imageDataToMakeCode(imageData, targetWidth, targetHeight),
-                dataUrl: imageCanvas.toDataURL()
-            };
-        }
-
-        // Preview button
-        previewImageBtn.addEventListener('click', () => {
-            if (!loadedImage) return;
-
-            const width = parseInt(imageWidth.value);
-            const height = parseInt(imageHeight.value);
-
-            // Draw original (scaled down to preview)
-            const previewScale = Math.min(160 / width, 120 / height, 4);
-            originalPreviewCanvas.width = width * previewScale;
-            originalPreviewCanvas.height = height * previewScale;
-            const origCtx = originalPreviewCanvas.getContext('2d');
-            origCtx.imageSmoothingEnabled = false;
-            
-            // Draw scaled version of original
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = width;
-            tempCanvas.height = height;
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCtx.drawImage(loadedImage, 0, 0, width, height);
-            origCtx.drawImage(tempCanvas, 0, 0, originalPreviewCanvas.width, originalPreviewCanvas.height);
-
-            // Process and draw converted
-            const result = processImage(loadedImage, width, height, imageDitherMode.value, imageScaleMode.value);
-            convertedPreviewCanvas.width = width * previewScale;
-            convertedPreviewCanvas.height = height * previewScale;
-            const convCtx = convertedPreviewCanvas.getContext('2d');
-            convCtx.imageSmoothingEnabled = false;
-            const convImg = new Image();
-            convImg.onload = () => {
-                convCtx.drawImage(convImg, 0, 0, convertedPreviewCanvas.width, convertedPreviewCanvas.height);
-            };
-            convImg.src = result.dataUrl;
-
-            showStatus('Preview generated', 'info', 'imageStatusMessage');
-        });
-
-        // Convert button
-        convertImageBtn.addEventListener('click', () => {
-            if (!loadedImage) return;
-
-            const width = parseInt(imageWidth.value);
-            const height = parseInt(imageHeight.value);
-
-            const result = processImage(loadedImage, width, height, imageDitherMode.value, imageScaleMode.value);
-
-            // Generate sprite code
-            generatedRawSprite = `img\`\n    ${result.makeCodeString.split('\n').join('\n    ')}\n    \``;
-            generatedSpriteCode = `let mySprite = sprites.create(${generatedRawSprite}, SpriteKind.Player)`;
-
-            imageSpriteCode.textContent = generatedSpriteCode;
-
-            // Update preview
-            const previewScale = Math.min(160 / width, 120 / height, 4);
-            
-            originalPreviewCanvas.width = width * previewScale;
-            originalPreviewCanvas.height = height * previewScale;
-            const origCtx = originalPreviewCanvas.getContext('2d');
-            origCtx.imageSmoothingEnabled = false;
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = width;
-            tempCanvas.height = height;
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCtx.drawImage(loadedImage, 0, 0, width, height);
-            origCtx.drawImage(tempCanvas, 0, 0, originalPreviewCanvas.width, originalPreviewCanvas.height);
-
-            convertedPreviewCanvas.width = width * previewScale;
-            convertedPreviewCanvas.height = height * previewScale;
-            const convCtx = convertedPreviewCanvas.getContext('2d');
-            convCtx.imageSmoothingEnabled = false;
-            const convImg = new Image();
-            convImg.onload = () => {
-                convCtx.drawImage(convImg, 0, 0, convertedPreviewCanvas.width, convertedPreviewCanvas.height);
-            };
-            convImg.src = result.dataUrl;
-
-            // Stats
-            const codeSize = new Blob([generatedSpriteCode]).size;
-            imageOutputStats.textContent = `${width}×${height} pixels | ${(codeSize / 1024).toFixed(1)} KB`;
-
-            // Enable buttons
-            copyImageBtn.disabled = false;
-            copyRawSpriteBtn.disabled = false;
-            downloadImageBtn.disabled = false;
-
-            showStatus(`Converted! ${width}×${height} sprite ready`, 'success', 'imageStatusMessage');
-        });
-
-        // Copy buttons
-        copyImageBtn.addEventListener('click', async () => {
-            try {
-                await navigator.clipboard.writeText(generatedSpriteCode);
-                showStatus('Full sprite code copied!', 'success', 'imageStatusMessage');
-            } catch (err) {
-                showStatus('Failed to copy', 'error', 'imageStatusMessage');
-            }
-        });
-
-        copyRawSpriteBtn.addEventListener('click', async () => {
-            try {
-                await navigator.clipboard.writeText(generatedRawSprite);
-                showStatus('img`` copied!', 'success', 'imageStatusMessage');
-            } catch (err) {
-                showStatus('Failed to copy', 'error', 'imageStatusMessage');
-            }
-        });
-
-        downloadImageBtn.addEventListener('click', () => {
-            const blob = new Blob([generatedSpriteCode], { type: 'text/typescript' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'makecode-sprite.ts';
-            a.click();
-            URL.revokeObjectURL(url);
-            showStatus('Downloaded makecode-sprite.ts', 'success', 'imageStatusMessage');
-        });
-
-        // ==================== VIDEO/AUDIO MODE FUNCTIONS ====================
-        // (Keep all the original video/audio functionality below)
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-        
-        function getMediaElement() {
-            return isAudioOnly ? audioPreview : videoPreview;
-        }
-
-        function updateTimeRangeDisplay() {
-            const media = getMediaElement();
-            if (!media.duration) return;
-            
-            const totalDuration = media.duration;
-            const clipStart = Math.min(parseFloat(startTime.value) || 0, totalDuration);
-            const clipDur = parseFloat(duration.value) || 10;
-            const clipEnd = Math.min(clipStart + clipDur, totalDuration);
-            const actualDur = clipEnd - clipStart;
-            
-            const leftPercent = (clipStart / totalDuration) * 100;
-            const widthPercent = (actualDur / totalDuration) * 100;
-            timeRangeSelected.style.left = `${leftPercent}%`;
-            timeRangeSelected.style.width = `${widthPercent}%`;
-            
-            timeRangeStart.textContent = formatTime(0);
-            timeRangeEnd.textContent = formatTime(totalDuration);
-            timeRangeInfo.textContent = `Converting ${formatTime(clipStart)} - ${formatTime(clipEnd)} (${actualDur.toFixed(1)}s)`;
-            
-            timeRangeContainer.style.display = 'block';
-        }
-
-        startTime.addEventListener('input', updateTimeRangeDisplay);
-        duration.addEventListener('input', updateTimeRangeDisplay);
-        
-        const seekToStartBtn = document.getElementById('seekToStartBtn');
-        const setStartBtn = document.getElementById('setStartBtn');
-        
-        seekToStartBtn.addEventListener('click', () => {
-            const start = parseFloat(startTime.value) || 0;
-            getMediaElement().currentTime = start;
-        });
-        
-        setStartBtn.addEventListener('click', () => {
-            const media = getMediaElement();
-            startTime.value = media.currentTime.toFixed(1);
-            updateTimeRangeDisplay();
-            showStatus(`Start time set to ${formatTime(media.currentTime)}`, 'info');
-        });
 
         function processFrame(video, targetWidth, targetHeight, dither, scale) {
             canvas.width = targetWidth;
@@ -1900,267 +1887,825 @@ let mySprite = sprites.create(img`
             };
         }
 
-        // Video upload handlers
-        uploadZone.addEventListener('click', () => videoInput.click());
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('dragover');
-        });
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('dragover');
-        });
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file) handleMediaFile(file);
-        });
+        // ============================================
+        // WEB WORKER FOR AUDIO PROCESSING
+        // ============================================
 
-        videoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) handleMediaFile(file);
-        });
+        // Web Worker code as a string (will be loaded as Blob)
+        const audioWorkerCode = `
+            // Frequency buckets matching the Python implementation
+            const FREQUENCY_BUCKETS = [50, 159, 200, 252, 317, 400, 504, 635, 800, 1008,
+                                       1270, 1600, 2016, 2504, 3200, 4032, 5080, 7000, 9000, 10240];
 
-        function handleMediaFile(file) {
-            const url = URL.createObjectURL(file);
-            isAudioOnly = file.type.startsWith('audio/');
-            
-            if (isAudioOnly) {
-                videoPreview.style.display = 'none';
-                audioPreview.style.display = 'block';
-                audioPreview.src = url;
-                previewPlaceholder.style.display = 'none';
+            // Create sound instruction (matches Python struct format)
+            function createSoundInstruction(startFreq, endFreq, startVol, endVol, duration) {
+                const buffer = new ArrayBuffer(12);
+                const view = new DataView(buffer);
                 
-                audioPreview.onloadedmetadata = () => {
-                    convertBtn.disabled = false;
-                    previewFrameBtn.disabled = true;
-                    extractAudioRow.style.display = 'flex';
-                    updateTimeRangeDisplay();
-                    showStatus(`Audio loaded: ${file.name} (${formatTime(audioPreview.duration)})`, 'success');
-                };
-            } else {
-                audioPreview.style.display = 'none';
-                videoPreview.style.display = 'block';
-                videoPreview.src = url;
-                previewPlaceholder.style.display = 'none';
+                view.setUint8(0, 3);  // Sine waveform
+                view.setUint8(1, 0);
+                view.setUint16(2, Math.max(1, Math.round(startFreq)), true);
+                view.setUint16(4, Math.round(duration), true);
+                view.setUint16(6, Math.min(1024, Math.max(0, Math.round(startVol))), true);
+                view.setUint16(8, Math.min(1024, Math.max(0, Math.round(endVol))), true);
+                view.setUint16(10, Math.max(1, Math.round(endFreq)), true);
                 
-                videoPreview.onloadedmetadata = () => {
-                    convertBtn.disabled = false;
-                    previewFrameBtn.disabled = false;
-                    extractAudioRow.style.display = 'flex';
-                    updateTimeRangeDisplay();
-                    showStatus(`Video loaded: ${file.name} (${formatTime(videoPreview.duration)})`, 'success');
-                };
+                return Array.from(new Uint8Array(buffer))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
             }
+
+            // Simple FFT implementation (Cooley-Tukey radix-2)
+            function fft(real, imag) {
+                const n = real.length;
+                if (n <= 1) return;
+
+                // Bit reversal permutation
+                for (let i = 0, j = 0; i < n; i++) {
+                    if (i < j) {
+                        [real[i], real[j]] = [real[j], real[i]];
+                        [imag[i], imag[j]] = [imag[j], imag[i]];
+                    }
+                    let k = n >> 1;
+                    while (k > 0 && k <= j) {  // Fixed: added k > 0 check
+                        j -= k;
+                        k >>= 1;
+                    }
+                    j += k;
+                }
+
+                // Cooley-Tukey FFT
+                for (let len = 2; len <= n; len <<= 1) {
+                    const halfLen = len >> 1;
+                    const angle = -2 * Math.PI / len;
+                    for (let i = 0; i < n; i += len) {
+                        for (let j = 0; j < halfLen; j++) {
+                            const cos = Math.cos(angle * j);
+                            const sin = Math.sin(angle * j);
+                            const tReal = real[i + j + halfLen] * cos - imag[i + j + halfLen] * sin;
+                            const tImag = real[i + j + halfLen] * sin + imag[i + j + halfLen] * cos;
+                            real[i + j + halfLen] = real[i + j] - tReal;
+                            imag[i + j + halfLen] = imag[i + j] - tImag;
+                            real[i + j] += tReal;
+                            imag[i + j] += tImag;
+                        }
+                    }
+                }
+            }
+
+            // Compute spectrogram
+            function computeSpectrogram(audioData, sampleRate, periodMs, onProgress) {
+                try {
+                    self.postMessage({ type: 'status', message: 'computeSpectrogram started' });
+                    
+                    const windowSize = Math.pow(2, Math.ceil(Math.log2(sampleRate * periodMs / 1000)));
+                    const hopSize = Math.round(sampleRate * periodMs / 1000);
+                    const numFrames = Math.floor((audioData.length - windowSize) / hopSize) + 1;
+                    const numBins = windowSize / 2;
+                    
+                    self.postMessage({ type: 'status', message: 'FFT: ' + numFrames + ' frames, window=' + windowSize + ', bins=' + numBins });
+                    
+                    const freqResolution = sampleRate / windowSize;
+                    const frequencies = [];
+                    for (let i = 0; i < numBins; i++) {
+                        frequencies.push(i * freqResolution);
+                    }
+                    
+                    const spectrogram = [];
+                    
+                    // Hann window (pre-compute)
+                    const hannWindow = new Float32Array(windowSize);
+                    for (let i = 0; i < windowSize; i++) {
+                        hannWindow[i] = 0.5 * (1 - Math.cos(2 * Math.PI * i / (windowSize - 1)));
+                    }
+                    
+                    self.postMessage({ type: 'status', message: 'Hann window created' });
+                    
+                    // Pre-allocate working buffers
+                    const real = new Float32Array(windowSize);
+                    const imag = new Float32Array(windowSize);
+                    
+                    self.postMessage({ type: 'status', message: 'Starting FFT loop over ' + numFrames + ' frames...' });
+
+                    for (let frame = 0; frame < numFrames; frame++) {
+                        const start = frame * hopSize;
+                        
+                        // Clear buffers
+                        for (let i = 0; i < windowSize; i++) {
+                            real[i] = 0;
+                            imag[i] = 0;
+                        }
+                        
+                        // Apply window
+                        const maxI = Math.min(windowSize, audioData.length - start);
+                        for (let i = 0; i < maxI; i++) {
+                            real[i] = audioData[start + i] * hannWindow[i];
+                        }
+                        
+                        // FFT
+                        fft(real, imag);
+                        
+                        // Store magnitudes
+                        const magnitudes = new Float32Array(numBins);
+                        for (let i = 0; i < numBins; i++) {
+                            magnitudes[i] = Math.sqrt(real[i] * real[i] + imag[i] * imag[i]);
+                        }
+                        
+                        spectrogram.push(magnitudes);
+                        
+                        // Progress every 10 frames
+                        if (frame % 10 === 0 && onProgress) {
+                            onProgress('spectrogram', frame, numFrames);
+                        }
+                    }
+                    
+                    self.postMessage({ type: 'status', message: 'FFT complete: ' + spectrogram.length + ' frames generated' });
+                    
+                    return { spectrogram, frequencies, numFrames };
+                    
+                } catch (err) {
+                    self.postMessage({ type: 'error', message: 'computeSpectrogram error: ' + (err.message || String(err)) });
+                    throw err;
+                }
+            }
+
+            // Process audio data
+            function processAudio(channelData, sampleRate, periodMs, gain) {
+                self.postMessage({ type: 'status', message: 'Computing spectrogram...' });
+                
+                const startTime = Date.now();
+                
+                const { spectrogram, frequencies } = computeSpectrogram(
+                    channelData, 
+                    sampleRate, 
+                    periodMs,
+                    (phase, current, total) => {
+                        self.postMessage({ 
+                            type: 'progress', 
+                            phase, 
+                            current, 
+                            total,
+                            percent: 50 + (current / total) * 25
+                        });
+                    }
+                );
+                
+                const spectrogramTime = Date.now() - startTime;
+                self.postMessage({ type: 'status', message: 'Spectrogram done in ' + spectrogramTime + 'ms. Processing buckets...' });
+                
+                // Initialize sound buffers
+                const soundBuffers = FREQUENCY_BUCKETS.map(() => '');
+                
+                // Find max amplitude (avoid spread operator on large arrays)
+                let maxAmp = 0;
+                for (let f = 0; f < spectrogram.length; f++) {
+                    const frame = spectrogram[f];
+                    for (let i = 0; i < frame.length; i++) {
+                        if (frame[i] > maxAmp) maxAmp = frame[i];
+                    }
+                }
+                if (maxAmp === 0) maxAmp = 1;
+                
+                self.postMessage({ type: 'status', message: 'Max amplitude: ' + maxAmp.toFixed(4) + '. Generating instructions...' });
+                
+                // Process each time slice
+                for (let sliceIndex = 0; sliceIndex < spectrogram.length; sliceIndex++) {
+                    const magnitudes = spectrogram[sliceIndex];
+                    
+                    for (let bucketIndex = 0; bucketIndex < FREQUENCY_BUCKETS.length; bucketIndex++) {
+                        const lowFreq = bucketIndex > 0 ? FREQUENCY_BUCKETS[bucketIndex - 1] : 0;
+                        const highFreq = FREQUENCY_BUCKETS[bucketIndex];
+                        
+                        let loudestFreq = 0;
+                        let loudestAmp = 0;
+                        
+                        for (let i = 0; i < frequencies.length; i++) {
+                            if (frequencies[i] >= lowFreq && frequencies[i] <= highFreq) {
+                                if (magnitudes[i] > loudestAmp) {
+                                    loudestAmp = magnitudes[i];
+                                    loudestFreq = frequencies[i];
+                                }
+                            }
+                        }
+                        
+                        if (loudestAmp > 0 && loudestFreq > 0) {
+                            const amp = Math.min(1024, Math.round((loudestAmp / maxAmp) * 1024 * gain));
+                            soundBuffers[bucketIndex] += createSoundInstruction(
+                                loudestFreq, loudestFreq, amp, amp, periodMs
+                            );
+                        } else {
+                            soundBuffers[bucketIndex] += createSoundInstruction(0, 0, 0, 0, periodMs);
+                        }
+                    }
+                    
+                    if (sliceIndex % 20 === 0) {
+                        self.postMessage({ 
+                            type: 'progress', 
+                            phase: 'buckets',
+                            current: sliceIndex, 
+                            total: spectrogram.length,
+                            percent: 75 + (sliceIndex / spectrogram.length) * 25
+                        });
+                    }
+                }
+                
+                const totalTime = Date.now() - startTime;
+                self.postMessage({ type: 'status', message: 'Audio processing complete in ' + totalTime + 'ms' });
+                
+                // Convert spectrogram to transferable format (keep subset for visualization)
+                const spectrogramForViz = spectrogram.map(frame => Array.from(frame.slice(0, 100)));
+                
+                return { soundBuffers, spectrogram: spectrogramForViz };
+            }
+
+            // Handle messages from main thread
+            self.onmessage = function(e) {
+                const { audioBuffer, sampleRate, periodMs, gain, length } = e.data;
+                
+                // Wrap the transferred ArrayBuffer as Float32Array
+                const channelData = new Float32Array(audioBuffer);
+                
+                self.postMessage({ 
+                    type: 'status', 
+                    message: 'Worker received: ' + channelData.length + ' samples, ' + sampleRate + 'Hz, period=' + periodMs + 'ms' 
+                });
+                
+                try {
+                    const result = processAudio(channelData, sampleRate, periodMs, gain);
+                    
+                    self.postMessage({ 
+                        type: 'complete', 
+                        soundBuffers: result.soundBuffers,
+                        spectrogram: result.spectrogram
+                    });
+                } catch (err) {
+                    self.postMessage({ type: 'error', message: err.message || String(err) });
+                }
+            };
+        `;
+
+        // Create worker from blob URL
+        function createAudioWorker() {
+            const blob = new Blob([audioWorkerCode], { type: 'application/javascript' });
+            const workerUrl = URL.createObjectURL(blob);
+            return new Worker(workerUrl);
+        }
+
+        // Analyze audio using Web Worker (non-blocking)
+        async function analyzeAudioSpectrogram(videoElement, periodMs, gain, clipStartSec, clipDurationSec) {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            progressText.textContent = 'Fetching audio data...';
+            await new Promise(r => setTimeout(r, 10));
+
+            // Fetch audio data
+            let arrayBuffer;
+            try {
+                const response = await fetch(videoElement.src);
+                arrayBuffer = await response.arrayBuffer();
+                console.log(`Fetched ${(arrayBuffer.byteLength / 1024 / 1024).toFixed(2)} MB`);
+            } catch (e) {
+                console.error('Fetch error:', e);
+                throw new Error('Could not fetch audio data');
+            }
+
+            if (skipAudioRequested) throw new Error('Skipped by user');
+
+            progressText.textContent = 'Decoding audio...';
+            await new Promise(r => setTimeout(r, 10));
+            
+            // Decode audio
+            let audioBuffer;
+            try {
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer.slice(0));
+                console.log(`Decoded: ${audioBuffer.duration.toFixed(2)}s, ${audioBuffer.sampleRate}Hz`);
+            } catch (e) {
+                console.error('Audio decode error:', e);
+                throw new Error(e.message || 'Could not decode audio track');
+            }
+            
+            if (skipAudioRequested) throw new Error('Skipped by user');
+            
+            const fullChannelData = audioBuffer.getChannelData(0);
+            const sampleRate = audioBuffer.sampleRate;
+            
+            // Extract clip segment
+            const startSample = Math.floor(clipStartSec * sampleRate);
+            const endSample = Math.min(
+                Math.floor((clipStartSec + clipDurationSec) * sampleRate),
+                fullChannelData.length
+            );
+            
+            progressText.textContent = 'Preparing audio segment...';
+            await new Promise(r => setTimeout(r, 10));
+            
+            // Copy to new Float32Array (will be transferred to worker)
+            const channelData = new Float32Array(endSample - startSample);
+            for (let i = 0; i < channelData.length; i++) {
+                channelData[i] = fullChannelData[startSample + i];
+            }
+            
+            console.log(`Audio segment: ${channelData.length} samples (${(channelData.length/sampleRate).toFixed(2)}s)`);
+            
+            if (skipAudioRequested) throw new Error('Skipped by user');
+            
+            // Process in Web Worker (non-blocking!)
+            progressText.textContent = 'Starting audio worker...';
+            console.log('Starting Web Worker for audio processing...');
+            
+            return new Promise((resolve, reject) => {
+                audioWorker = createAudioWorker();
+                
+                audioWorker.onmessage = function(e) {
+                    const { type, message, percent, soundBuffers, spectrogram, phase, current, total } = e.data;
+                    
+                    if (type === 'status') {
+                        progressText.textContent = message;
+                        console.log('Worker:', message);
+                    } else if (type === 'progress') {
+                        progressFill.style.width = percent + '%';
+                        progressText.textContent = `${phase}: ${current}/${total}`;
+                    } else if (type === 'complete') {
+                        console.log('Worker completed successfully');
+                        audioWorker.terminate();
+                        audioWorker = null;
+                        
+                        // Store spectrogram for visualization
+                        spectrogramData = spectrogram;
+                        
+                        resolve(soundBuffers);
+                    } else if (type === 'error') {
+                        console.error('Worker error:', message);
+                        audioWorker.terminate();
+                        audioWorker = null;
+                        reject(new Error(message));
+                    }
+                };
+                
+                audioWorker.onerror = function(e) {
+                    console.error('Worker crashed:', e);
+                    audioWorker.terminate();
+                    audioWorker = null;
+                    reject(new Error('Audio worker crashed: ' + (e.message || 'Unknown error')));
+                };
+                
+                // Send data to worker - transfer the ArrayBuffer for zero-copy
+                // We send the raw ArrayBuffer and the worker will wrap it
+                audioWorker.postMessage({
+                    audioBuffer: channelData.buffer,
+                    sampleRate: sampleRate,
+                    periodMs: periodMs,
+                    gain: gain,
+                    length: channelData.length
+                }, [channelData.buffer]);
+            });
+        }
+
+        // Draw spectrogram visualization
+        function drawSpectrogram(data) {
+            const rect = spectrogramCanvas.getBoundingClientRect();
+            spectrogramCanvas.width = rect.width * window.devicePixelRatio;
+            spectrogramCanvas.height = rect.height * window.devicePixelRatio;
+            spectrogramCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+            const width = rect.width;
+            const height = rect.height;
+            
+            spectrogramCtx.fillStyle = '#0d0d0d';
+            spectrogramCtx.fillRect(0, 0, width, height);
+
+            if (!data || data.length === 0) return;
+
+            const sliceWidth = width / data.length;
+            const maxFreqBin = Math.min(100, data[0]?.length || 100); // Show up to ~10kHz
+            
+            // Find max for normalization
+            let maxVal = 0;
+            for (const frame of data) {
+                for (let i = 0; i < maxFreqBin && i < frame.length; i++) {
+                    if (frame[i] > maxVal) maxVal = frame[i];
+                }
+            }
+            if (maxVal === 0) maxVal = 1;
+
+            for (let x = 0; x < data.length; x++) {
+                const frame = data[x];
+                for (let y = 0; y < maxFreqBin && y < frame.length; y++) {
+                    const intensity = Math.min(1, (frame[y] / maxVal) * 2);
+                    if (intensity > 0.01) {
+                        // Orange to yellow gradient based on intensity
+                        const r = 255;
+                        const g = Math.round(129 + intensity * 126);
+                        const b = Math.round(53 * (1 - intensity));
+                        spectrogramCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${intensity})`;
+                        spectrogramCtx.fillRect(
+                            x * sliceWidth,
+                            height - (y / maxFreqBin) * height,
+                            sliceWidth + 1,
+                            height / maxFreqBin + 1
+                        );
+                    }
+                }
+            }
+        }
+
+        // Generate audio code (TypeScript format)
+        function generateAudioCode(soundBuffers, periodMs) {
+            const wrappedBuffers = soundBuffers.map(buf => `hex\`${buf}\``);
+            
+            let code = `// Audio generated using spectrogram analysis\n`;
+            code += `// ${FREQUENCY_BUCKETS.length} frequency bands, ${periodMs}ms period\n\n`;
+            code += `namespace music {\n`;
+            code += `    //% shim=music::queuePlayInstructions\n`;
+            code += `    export function queuePlayInstructions(timeDelta: number, buf: Buffer) { }\n`;
+            code += `}\n\n`;
+            code += `const soundInstructions = [\n`;
+            code += `    ${wrappedBuffers.join(',\n    ')}\n`;
+            code += `];\n\n`;
+            code += `// Play all frequency bands simultaneously\n`;
+            code += `for (const instructions of soundInstructions) {\n`;
+            code += `    music.queuePlayInstructions(0, instructions);\n`;
+            code += `}\n`;
+            
+            return code;
         }
 
         // Generate video code
         function generateVideoCode(frames, width, height) {
-            let code = `// Video frames: ${frames.length} @ ${width}x${height}\n`;
-            code += `let frames: Image[] = [\n`;
-            
+            let code = `// Video: ${frames.length} frames at ${width}x${height}\n`;
+            code += `let frames = [`;
             frames.forEach((frame, i) => {
-                code += `    img\`\n`;
-                const lines = frame.makeCodeString.split('\n');
-                lines.forEach(line => {
-                    code += `        ${line}\n`;
-                });
-                code += `    \`${i < frames.length - 1 ? ',' : ''}\n`;
+                code += `img\`\n${frame.makeCodeString}\n\``;
+                if (i < frames.length - 1) code += ', ';
             });
-            
             code += `]\n`;
             return code;
         }
 
-        // Generate audio code (placeholder - full implementation would be in the worker)
-        function generateAudioCode(buffers, period) {
-            if (buffers.length === 0) return '// No audio data';
-            
-            let code = `// Audio: ${buffers.length} frequency channels @ ${period}ms period\n`;
-            code += `// Polyphonic playback using music.playInstructions\n\n`;
-            
-            buffers.forEach((buf, i) => {
-                if (buf && buf.length > 0) {
-                    code += `const ch${i} = hex\`${buf}\`\n`;
-                }
-            });
-            
-            code += `\n// Play all channels simultaneously\n`;
-            code += `music.playInstructions(${period}, ch0)\n`;
-            
-            return code;
-        }
-
         // Generate combined code
-        function generateCombinedCode(frames, audioBuffers, width, height, fps, period) {
-            let code = generateVideoCode(frames, width, height);
-            code += '\n';
+        function generateCombinedCode(frames, soundBuffers, width, height, fps, periodMs) {
+            const frameDuration = Math.round(1000 / fps);
             
-            if (audioBuffers.length > 0) {
-                code += generateAudioCode(audioBuffers, period);
-                code += '\n';
+            let code = `// MakeCode Arcade Video + Audio\n`;
+            code += `// Video: ${frames.length} frames at ${width}x${height}, ${fps} FPS\n`;
+            code += `// Audio: ${FREQUENCY_BUCKETS.length} frequency bands, ${periodMs}ms period\n\n`;
+            
+            // Namespace for audio
+            code += `namespace music {\n`;
+            code += `    //% shim=music::queuePlayInstructions\n`;
+            code += `    export function queuePlayInstructions(timeDelta: number, buf: Buffer) { }\n`;
+            code += `}\n\n`;
+            
+            // Video frames
+            code += `let frames = [`;
+            frames.forEach((frame, i) => {
+                code += `img\`\n${frame.makeCodeString}\n\``;
+                if (i < frames.length - 1) code += ', ';
+            });
+            code += `]\n\n`;
+            
+            // Audio buffers
+            if (soundBuffers && soundBuffers.length > 0) {
+                const wrappedBuffers = soundBuffers.map(buf => `hex\`${buf}\``);
+                code += `const soundInstructions = [\n`;
+                code += `    ${wrappedBuffers.join(',\n    ')}\n`;
+                code += `];\n\n`;
             }
             
-            code += `// Synchronized playback\n`;
-            code += `let frameIndex = 0\n`;
-            code += `game.onUpdateInterval(${Math.round(1000/fps)}, function() {\n`;
-            code += `    scene.setBackgroundImage(frames[frameIndex])\n`;
-            code += `    frameIndex = (frameIndex + 1) % frames.length\n`;
-            code += `})\n`;
+            // Playback
+            code += `// Start audio playback (runs in parallel)\n`;
+            if (soundBuffers && soundBuffers.length > 0) {
+                code += `for (const instructions of soundInstructions) {\n`;
+                code += `    music.queuePlayInstructions(0, instructions);\n`;
+                code += `}\n\n`;
+            }
+            
+            code += `// Play video frames\n`;
+            code += `for (let frame of frames) {\n`;
+            code += `    scene.setBackgroundImage(frame)\n`;
+            code += `    pause(${frameDuration})\n`;
+            code += `}\n`;
             
             return code;
         }
 
-        // Preview frame button
+        // Show status
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+        }
+
+        // Event handlers
+        uploadZone.addEventListener('click', () => videoInput.click());
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        videoInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            const isVideo = file.type.startsWith('video/');
+            const isAudio = file.type.startsWith('audio/') || 
+                           file.name.toLowerCase().endsWith('.mp3') ||
+                           file.name.toLowerCase().endsWith('.wav') ||
+                           file.name.toLowerCase().endsWith('.ogg') ||
+                           file.name.toLowerCase().endsWith('.m4a');
+            
+            if (!isVideo && !isAudio) {
+                showStatus('Please select a video or audio file', 'error');
+                return;
+            }
+
+            currentMediaFile = file;
+            isAudioOnly = isAudio && !isVideo;
+            const url = URL.createObjectURL(file);
+            
+            // Reset displays
+            videoPreview.style.display = 'none';
+            audioPreview.style.display = 'none';
+            previewPlaceholder.style.display = 'none';
+            
+            // Show/hide video-specific controls
+            const videoControls = document.querySelectorAll('#outputWidth, #outputHeight, #frameRate, #maxFrames, #ditherMode, #scaleMode, #lockAspect, #videoOnly');
+            const videoControlGroups = document.querySelectorAll('#outputWidth, #outputHeight, #frameRate, #maxFrames, #ditherMode, #scaleMode').forEach(el => {
+                el.closest('.control-group').style.display = isAudioOnly ? 'none' : 'block';
+            });
+            document.querySelector('#lockAspect').closest('.checkbox-group').style.display = isAudioOnly ? 'none' : 'flex';
+            document.querySelector('#videoOnly').closest('.checkbox-group').style.display = isAudioOnly ? 'none' : 'flex';
+            
+            // Show extract audio button only for videos
+            extractAudioRow.style.display = isVideo ? 'flex' : 'none';
+            
+            if (isAudioOnly) {
+                // Audio-only file
+                audioPreview.src = url;
+                audioPreview.style.display = 'block';
+                
+                // Force audio extraction on
+                extractAudio.checked = true;
+                extractAudio.disabled = true;
+                videoOnly.checked = false;
+                
+                audioPreview.onloadedmetadata = () => {
+                    convertBtn.disabled = false;
+                    previewFrameBtn.disabled = true;
+                    seekToStartBtn.disabled = false;
+                    setStartBtn.disabled = false;
+                    
+                    const audioDuration = audioPreview.duration;
+                    if (audioDuration < parseFloat(duration.value)) {
+                        duration.value = Math.floor(audioDuration);
+                    }
+                    duration.max = Math.ceil(audioDuration);
+                    startTime.max = Math.max(0, audioDuration - 1);
+                    
+                    updateTimeRangeDisplay();
+                    showStatus(`Loaded: ${file.name} (${audioDuration.toFixed(1)}s audio)`, 'success');
+                };
+            } else {
+                // Video file
+                videoPreview.src = url;
+                videoPreview.style.display = 'block';
+                extractAudio.disabled = false;
+                
+                videoPreview.onloadedmetadata = () => {
+                    convertBtn.disabled = false;
+                    previewFrameBtn.disabled = false;
+                    seekToStartBtn.disabled = false;
+                    setStartBtn.disabled = false;
+                    
+                    const videoDuration = videoPreview.duration;
+                    if (videoDuration < parseFloat(duration.value)) {
+                        duration.value = Math.floor(videoDuration);
+                    }
+                    duration.max = Math.ceil(videoDuration);
+                    startTime.max = Math.max(0, videoDuration - 1);
+                    
+                    updateTimeRangeDisplay();
+                    showStatus(`Loaded: ${file.name} (${videoPreview.videoWidth}x${videoPreview.videoHeight}, ${videoDuration.toFixed(1)}s)`, 'success');
+                };
+            }
+        }
+
+        lockAspect.addEventListener('change', () => {
+            if (lockAspect.checked) {
+                outputHeight.value = Math.round(parseInt(outputWidth.value) * 3 / 4);
+            }
+        });
+
+        outputWidth.addEventListener('input', () => {
+            if (lockAspect.checked) {
+                outputHeight.value = Math.round(parseInt(outputWidth.value) * 3 / 4);
+            }
+        });
+
+        videoOnly.addEventListener('change', () => {
+            extractAudio.disabled = videoOnly.checked;
+        });
+
         previewFrameBtn.addEventListener('click', () => {
-            if (isAudioOnly) return;
-            
-            const width = parseInt(outputWidth.value);
-            const height = parseInt(outputHeight.value);
-            
-            const result = processFrame(videoPreview, width, height, ditherMode.value, scaleMode.value);
-            
+            const result = processFrame(
+                videoPreview,
+                parseInt(outputWidth.value),
+                parseInt(outputHeight.value),
+                ditherMode.value,
+                scaleMode.value
+            );
+
             framePreviewGrid.innerHTML = '';
             const thumb = document.createElement('img');
             thumb.src = result.dataUrl;
             thumb.className = 'frame-thumb';
-            thumb.style.width = '100%';
-            thumb.style.maxWidth = '200px';
+            thumb.style.width = '80px';
             framePreviewGrid.appendChild(thumb);
-            
-            showStatus(`Preview: ${width}x${height}`, 'info');
+
+            outputCodeVideo.textContent = `img\`\n${result.makeCodeString}\n\``;
+            showStatus('Frame preview generated', 'info');
         });
 
-        // Initialize frequency buckets
-        function initFreqBuckets() {
-            freqBuckets.innerHTML = '';
-            for (let i = 0; i < FREQUENCY_BUCKETS.length; i++) {
-                const div = document.createElement('div');
-                div.className = 'freq-bucket';
-                div.style.height = '2px';
-                div.title = `${i > 0 ? FREQUENCY_BUCKETS[i-1] : 0}-${FREQUENCY_BUCKETS[i]} Hz`;
-                freqBuckets.appendChild(div);
-            }
-        }
-
-        function updateFreqBuckets(amplitudes) {
-            const buckets = freqBuckets.children;
-            const maxAmp = Math.max(...amplitudes, 0.001);
-            for (let i = 0; i < buckets.length && i < amplitudes.length; i++) {
-                const height = Math.max(2, (amplitudes[i] / maxAmp) * 50);
-                buckets[i].style.height = height + 'px';
-            }
-        }
-
-        // Draw spectrogram
-        function drawSpectrogram(data) {
-            if (!data || data.length === 0) return;
-            
-            const width = spectrogramCanvas.offsetWidth || 400;
-            const height = 100;
-            spectrogramCanvas.width = width;
-            spectrogramCanvas.height = height;
-            
-            const ctx = spectrogramCtx;
-            ctx.fillStyle = '#0d0d0d';
-            ctx.fillRect(0, 0, width, height);
-            
-            // Simple visualization
-            const barWidth = Math.max(1, width / data.length);
-            data.forEach((frame, i) => {
-                const x = i * barWidth;
-                let maxVal = 0;
-                for (let j = 0; j < frame.length; j++) {
-                    if (frame[j] > maxVal) maxVal = frame[j];
-                }
-                const barHeight = (maxVal / 1024) * height;
-                const hue = 30 + (maxVal / 1024) * 30;
-                ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-                ctx.fillRect(x, height - barHeight, barWidth, barHeight);
-            });
-        }
-
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-                currentTab = btn.dataset.tab;
-            });
-        });
-
-        // Main convert button (simplified - full audio worker code omitted for brevity)
+        // Main conversion
         convertBtn.addEventListener('click', async () => {
-            if (isAudioOnly) {
-                showStatus('Audio-only conversion - use the Audio Only button', 'info');
-                return;
-            }
-            
             convertBtn.disabled = true;
             previewFrameBtn.disabled = true;
             progressContainer.classList.add('active');
             progressFill.style.width = '0%';
+            progressFill.classList.remove('audio');
             
             const conversionStartTime = performance.now();
+            console.log('=== Starting conversion ===');
 
             try {
                 const fps = parseInt(frameRate.value);
                 const maxCount = parseInt(maxFrames.value);
                 const width = parseInt(outputWidth.value);
                 const height = parseInt(outputHeight.value);
+                const period = parseInt(audioPeriod.value);
+                const gain = parseFloat(audioGain.value);
+                
+                const mediaElement = getMediaElement();
+                const includeVideo = !isAudioOnly && videoPreview.videoWidth > 0;
+                const includeAudio = extractAudio.checked && !videoOnly.checked;
 
+                // Calculate clip boundaries
                 const clipStart = parseFloat(startTime.value) || 0;
                 const clipDuration = parseFloat(duration.value) || 10;
-                const clipEnd = Math.min(clipStart + clipDuration, videoPreview.duration);
+                const clipEnd = Math.min(clipStart + clipDuration, mediaElement.duration);
                 const actualDuration = clipEnd - clipStart;
+
+                console.log(`Mode: ${isAudioOnly ? 'Audio-only' : 'Video+Audio'}`);
+                console.log(`Parameters: ${width}x${height}, ${fps}fps, max ${maxCount} frames`);
+                console.log(`Clip: ${clipStart.toFixed(1)}s to ${clipEnd.toFixed(1)}s (${actualDuration.toFixed(1)}s)`);
+                console.log(`Audio: ${includeAudio ? 'yes' : 'no'}, period=${period}ms, gain=${gain}`);
 
                 // Extract video frames
                 convertedFrames = [];
-                framePreviewGrid.innerHTML = '';
-                const frameInterval = 1 / fps;
-                const totalFrames = Math.min(Math.floor(actualDuration * fps), maxCount);
+                
+                if (includeVideo) {
+                    framePreviewGrid.innerHTML = '';
+                    const frameInterval = 1 / fps;
+                    const totalFrames = Math.min(Math.floor(actualDuration * fps), maxCount);
 
-                for (let i = 0; i < totalFrames; i++) {
-                    const frameTime = clipStart + (i * frameInterval);
-                    if (frameTime >= clipEnd) break;
+                    for (let i = 0; i < totalFrames; i++) {
+                        const frameTime = clipStart + (i * frameInterval);
+                        if (frameTime >= clipEnd) break;
+                        
+                        videoPreview.currentTime = frameTime;
+                        await new Promise(resolve => { videoPreview.onseeked = resolve; });
+                        await new Promise(resolve => setTimeout(resolve, 50));
+
+                        const result = processFrame(videoPreview, width, height, ditherMode.value, scaleMode.value);
+                        convertedFrames.push(result);
+
+                        // Thumbnail
+                        const thumb = document.createElement('img');
+                        thumb.src = result.dataUrl;
+                        thumb.className = 'frame-thumb';
+                        framePreviewGrid.appendChild(thumb);
+
+                        const progress = includeAudio 
+                            ? ((i + 1) / totalFrames) * 50  // Video is 0-50% when audio included
+                            : ((i + 1) / totalFrames) * 100; // Video is 0-100% when no audio
+                        progressFill.style.width = `${progress}%`;
+                        progressText.textContent = `Extracting frame ${i + 1}/${totalFrames} (${frameTime.toFixed(1)}s)...`;
+                    }
+                }
+
+                // Extract audio using spectrogram method
+                audioBuffers = [];
+                if (includeAudio) {
+                    progressFill.classList.add('audio');
+                    progressFill.style.width = includeVideo ? '50%' : '0%';
+                    progressText.textContent = 'Starting audio analysis...';
                     
-                    videoPreview.currentTime = frameTime;
-                    await new Promise(resolve => { videoPreview.onseeked = resolve; });
-                    await new Promise(resolve => setTimeout(resolve, 50));
-
-                    const result = processFrame(videoPreview, width, height, ditherMode.value, scaleMode.value);
-                    convertedFrames.push(result);
-
-                    const thumb = document.createElement('img');
-                    thumb.src = result.dataUrl;
-                    thumb.className = 'frame-thumb';
-                    framePreviewGrid.appendChild(thumb);
-
-                    const progress = ((i + 1) / totalFrames) * 100;
-                    progressFill.style.width = `${progress}%`;
-                    progressText.textContent = `Extracting frame ${i + 1}/${totalFrames} (${frameTime.toFixed(1)}s)...`;
+                    // Show skip button and reset flag
+                    skipAudioRequested = false;
+                    skipAudioBtn.style.display = 'block';
+                    skipAudioBtn.textContent = '⏭ Skip Audio Processing';
+                    skipAudioBtn.disabled = false;
+                    
+                    await new Promise(r => setTimeout(r, 10));
+                    
+                    try {
+                        console.log('Starting audio analysis...');
+                        const audioStartTime = performance.now();
+                        
+                        // Use the correct media element for audio extraction
+                        audioBuffers = await analyzeAudioSpectrogram(mediaElement, period, gain, clipStart, actualDuration);
+                        
+                        const audioElapsed = ((performance.now() - audioStartTime) / 1000).toFixed(1);
+                        console.log(`Audio analysis completed in ${audioElapsed}s`);
+                        
+                        drawSpectrogram(spectrogramData);
+                        
+                        // Update frequency bucket visualization
+                        if (spectrogramData.length > 0) {
+                            const midFrame = Math.floor(spectrogramData.length / 2);
+                            const sampleAmps = FREQUENCY_BUCKETS.map((_, i) => {
+                                // Get average amplitude for each bucket across all frames
+                                let sum = 0;
+                                for (const frame of spectrogramData) {
+                                    if (frame[i * 5]) sum += frame[i * 5];
+                                }
+                                return sum / spectrogramData.length;
+                            });
+                            updateFreqBuckets(sampleAmps);
+                        }
+                        
+                    } catch (audioErr) {
+                        console.error('Audio extraction failed:', audioErr);
+                        if (audioErr.message === 'Skipped by user') {
+                            showStatus('Audio skipped - video frames only', 'info');
+                        } else {
+                            showStatus(`Video converted (audio failed: ${audioErr.message})`, 'info');
+                        }
+                        audioBuffers = [];
+                    }
+                    
+                    // Hide skip button
+                    skipAudioBtn.style.display = 'none';
                 }
 
                 progressFill.style.width = '100%';
 
-                generatedCode.video = generateVideoCode(convertedFrames, width, height);
-                generatedCode.audio = '// Audio extraction not included in this simplified version';
-                generatedCode.combined = generatedCode.video + '\n\n// Animation loop\nwhile (true) {\n    for (let frame of frames) {\n        scene.setBackgroundImage(frame)\n        pause(100)\n    }\n}\n';
+                // Generate code
+                if (includeVideo) {
+                    generatedCode.video = generateVideoCode(convertedFrames, width, height);
+                } else {
+                    generatedCode.video = '// No video frames extracted';
+                }
+
+                if (audioBuffers.length > 0) {
+                    generatedCode.audio = generateAudioCode(audioBuffers, period);
+                } else {
+                    generatedCode.audio = '// No audio extracted';
+                }
+
+                if (includeVideo && audioBuffers.length > 0) {
+                    generatedCode.combined = generateCombinedCode(convertedFrames, audioBuffers, width, height, fps, period);
+                } else if (includeVideo) {
+                    generatedCode.combined = generatedCode.video + '\n\n// Animation loop\nwhile (true) {\n    for (let frame of frames) {\n        scene.setBackgroundImage(frame)\n        pause(100)\n    }\n}\n';
+                } else {
+                    generatedCode.combined = generatedCode.audio;
+                }
 
                 outputCodeCombined.textContent = generatedCode.combined;
                 outputCodeVideo.textContent = generatedCode.video;
                 outputCodeAudio.textContent = generatedCode.audio;
 
                 const codeSize = new Blob([generatedCode.combined]).size;
-                outputStats.textContent = `${convertedFrames.length} frames | ${(codeSize / 1024).toFixed(1)} KB`;
+                outputStats.textContent = `${convertedFrames.length} frames, ${audioBuffers.length > 0 ? '20 audio channels' : 'no audio'} | ${(codeSize / 1024).toFixed(1)} KB`;
 
                 copyBtn.disabled = false;
                 downloadBtn.disabled = false;
                 
                 const totalElapsed = ((performance.now() - conversionStartTime) / 1000).toFixed(1);
-                showStatus(`Done in ${totalElapsed}s! ${convertedFrames.length} frames extracted`, 'success');
+                console.log(`=== Conversion complete in ${totalElapsed}s ===`);
+                
+                if (isAudioOnly) {
+                    showStatus(`Done in ${totalElapsed}s! Polyphonic audio generated (20 channels)`, 'success');
+                } else {
+                    showStatus(`Done in ${totalElapsed}s! ${convertedFrames.length} frames${audioBuffers.length > 0 ? ' + polyphonic audio' : ''}`, 'success');
+                }
 
             } catch (error) {
                 showStatus(`Error: ${error.message}`, 'error');
@@ -2194,9 +2739,347 @@ let mySprite = sprites.create(img`
             showStatus(`Downloaded makecode-${currentTab}.ts`, 'success');
         });
 
+        // ============================================
+        // IMAGE MODE
+        // ============================================
+
+        // Mode switching
+        const modeBtns = document.querySelectorAll('.mode-btn');
+        const modeContents = document.querySelectorAll('.mode-content');
+
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modeBtns.forEach(b => b.classList.remove('active'));
+                modeContents.forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.mode + 'Mode').classList.add('active');
+            });
+        });
+
+        // Image mode elements
+        const imageUploadZone = document.getElementById('imageUploadZone');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePlaceholder = document.getElementById('imagePlaceholder');
+        const imageSizeInfo = document.getElementById('imageSizeInfo');
+        const imageWidthInput = document.getElementById('imageWidth');
+        const imageHeightInput = document.getElementById('imageHeight');
+        const imageDitherMode = document.getElementById('imageDitherMode');
+        const imageScaleMode = document.getElementById('imageScaleMode');
+        const keepAspectRatio = document.getElementById('keepAspectRatio');
+        const convertImageBtn = document.getElementById('convertImageBtn');
+        const previewImageBtn = document.getElementById('previewImageBtn');
+        const imageStatusMessage = document.getElementById('imageStatusMessage');
+        const imagePalettePreview = document.getElementById('imagePalettePreview');
+        const originalPreviewCanvas = document.getElementById('originalPreviewCanvas');
+        const convertedPreviewCanvas = document.getElementById('convertedPreviewCanvas');
+        const imageSpriteCode = document.getElementById('imageSpriteCode');
+        const imageOutputStats = document.getElementById('imageOutputStats');
+        const copyImageBtn = document.getElementById('copyImageBtn');
+        const copyRawSpriteBtn = document.getElementById('copyRawSpriteBtn');
+        const downloadImageBtn = document.getElementById('downloadImageBtn');
+        const imageCanvas = document.getElementById('imageProcessingCanvas');
+        const imageCtx = imageCanvas.getContext('2d', { willReadFrequently: true });
+
+        // Image state
+        let loadedImage = null;
+        let originalImageWidth = 0;
+        let originalImageHeight = 0;
+        let generatedSpriteCode = '';
+        let generatedRawSprite = '';
+
+        // Show status for image mode
+        function showImageStatus(message, type) {
+            imageStatusMessage.textContent = message;
+            imageStatusMessage.className = 'status-message ' + type;
+            setTimeout(() => { imageStatusMessage.className = 'status-message'; }, 5000);
+        }
+
+        // Initialize image palette preview
+        function initImagePalettePreview() {
+            imagePalettePreview.innerHTML = '';
+            MAKECODE_PALETTE.forEach((color) => {
+                const div = document.createElement('div');
+                div.className = 'palette-color';
+                div.style.backgroundColor = color.a === 0 
+                    ? 'repeating-conic-gradient(#666 0% 25%, #999 0% 50%) 50% / 6px 6px'
+                    : `rgb(${color.r}, ${color.g}, ${color.b})`;
+                div.dataset.char = color.char === '0' ? '.' : color.char;
+                div.title = `${color.char === '0' ? '.' : color.char}: ${color.name}`;
+                imagePalettePreview.appendChild(div);
+            });
+        }
+
+        // Handle image upload
+        imageUploadZone.addEventListener('click', () => imageInput.click());
+        imageUploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            imageUploadZone.classList.add('dragover');
+        });
+        imageUploadZone.addEventListener('dragleave', () => {
+            imageUploadZone.classList.remove('dragover');
+        });
+        imageUploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            imageUploadZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                loadImageFile(file);
+            }
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) loadImageFile(file);
+        });
+
+        function loadImageFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    loadedImage = img;
+                    originalImageWidth = img.width;
+                    originalImageHeight = img.height;
+
+                    // Show preview
+                    imagePreviewContainer.innerHTML = '';
+                    const previewImg = document.createElement('img');
+                    previewImg.src = e.target.result;
+                    previewImg.style.maxWidth = '100%';
+                    previewImg.style.maxHeight = '300px';
+                    imagePreviewContainer.appendChild(previewImg);
+
+                    imageSizeInfo.innerHTML = `Original size: <strong>${img.width}×${img.height}</strong> pixels`;
+
+                    // Enable buttons
+                    convertImageBtn.disabled = false;
+                    previewImageBtn.disabled = false;
+
+                    showImageStatus(`Image loaded: ${file.name}`, 'success');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Aspect ratio locking
+        imageWidthInput.addEventListener('input', () => {
+            if (keepAspectRatio.checked && loadedImage) {
+                const aspect = originalImageWidth / originalImageHeight;
+                imageHeightInput.value = Math.round(parseInt(imageWidthInput.value) / aspect);
+            }
+        });
+
+        imageHeightInput.addEventListener('input', () => {
+            if (keepAspectRatio.checked && loadedImage) {
+                const aspect = originalImageWidth / originalImageHeight;
+                imageWidthInput.value = Math.round(parseInt(imageHeightInput.value) * aspect);
+            }
+        });
+
+        // Convert image to MakeCode format (for sprites, use '.' for transparent)
+        function imageDataToMakeCodeSprite(imageData, width, height) {
+            const data = imageData.data;
+            let result = '';
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const i = (y * width + x) * 4;
+                    const nearest = findNearestColor(data[i], data[i+1], data[i+2], data[i+3]);
+                    // Use '.' for transparent in sprites
+                    result += nearest.char === '0' ? '.' : nearest.char;
+                    if (x < width - 1) result += ' ';
+                }
+                result += '\n';
+            }
+            return result.trim();
+        }
+
+        // Process image
+        function processImageForSprite(img, targetWidth, targetHeight, dither, scale) {
+            imageCanvas.width = targetWidth;
+            imageCanvas.height = targetHeight;
+            imageCtx.clearRect(0, 0, targetWidth, targetHeight);
+
+            // Fill with transparent
+            imageCtx.fillStyle = 'rgba(0,0,0,0)';
+            imageCtx.fillRect(0, 0, targetWidth, targetHeight);
+
+            const imgAspect = img.width / img.height;
+            const targetAspect = targetWidth / targetHeight;
+            let sx = 0, sy = 0, sw = img.width, sh = img.height;
+            let dx = 0, dy = 0, dw = targetWidth, dh = targetHeight;
+
+            if (scale === 'fit') {
+                if (imgAspect > targetAspect) {
+                    dh = targetWidth / imgAspect;
+                    dy = (targetHeight - dh) / 2;
+                } else {
+                    dw = targetHeight * imgAspect;
+                    dx = (targetWidth - dw) / 2;
+                }
+            } else if (scale === 'fill') {
+                if (imgAspect > targetAspect) {
+                    sw = img.height * targetAspect;
+                    sx = (img.width - sw) / 2;
+                } else {
+                    sh = img.width / targetAspect;
+                    sy = (img.height - sh) / 2;
+                }
+            }
+
+            imageCtx.imageSmoothingEnabled = true;
+            imageCtx.imageSmoothingQuality = 'high';
+            imageCtx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+
+            let imageData = imageCtx.getImageData(0, 0, targetWidth, targetHeight);
+
+            if (dither === 'floyd') {
+                imageData = applyFloydSteinberg(imageData, targetWidth, targetHeight);
+            } else if (dither === 'ostromoukhov') {
+                imageData = applyOstromoukhov(imageData, targetWidth, targetHeight);
+            } else if (dither === 'ordered') {
+                imageData = applyOrderedDither(imageData, targetWidth, targetHeight);
+            } else {
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const nearest = findNearestColor(data[i], data[i+1], data[i+2], data[i+3]);
+                    data[i] = nearest.r;
+                    data[i + 1] = nearest.g;
+                    data[i + 2] = nearest.b;
+                }
+            }
+
+            imageCtx.putImageData(imageData, 0, 0);
+
+            return {
+                imageData,
+                makeCodeString: imageDataToMakeCodeSprite(imageData, targetWidth, targetHeight),
+                dataUrl: imageCanvas.toDataURL()
+            };
+        }
+
+        // Preview button
+        previewImageBtn.addEventListener('click', () => {
+            if (!loadedImage) return;
+
+            const width = parseInt(imageWidthInput.value);
+            const height = parseInt(imageHeightInput.value);
+
+            // Draw original (scaled down to preview)
+            const previewScale = Math.min(160 / width, 120 / height, 4);
+            originalPreviewCanvas.width = width * previewScale;
+            originalPreviewCanvas.height = height * previewScale;
+            const origCtx = originalPreviewCanvas.getContext('2d');
+            origCtx.imageSmoothingEnabled = false;
+            
+            // Draw scaled version of original
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(loadedImage, 0, 0, width, height);
+            origCtx.drawImage(tempCanvas, 0, 0, originalPreviewCanvas.width, originalPreviewCanvas.height);
+
+            // Process and draw converted
+            const result = processImageForSprite(loadedImage, width, height, imageDitherMode.value, imageScaleMode.value);
+            convertedPreviewCanvas.width = width * previewScale;
+            convertedPreviewCanvas.height = height * previewScale;
+            const convCtx = convertedPreviewCanvas.getContext('2d');
+            convCtx.imageSmoothingEnabled = false;
+            const convImg = new Image();
+            convImg.onload = () => {
+                convCtx.drawImage(convImg, 0, 0, convertedPreviewCanvas.width, convertedPreviewCanvas.height);
+            };
+            convImg.src = result.dataUrl;
+
+            showImageStatus('Preview generated', 'info');
+        });
+
+        // Convert button
+        convertImageBtn.addEventListener('click', () => {
+            if (!loadedImage) return;
+
+            const width = parseInt(imageWidthInput.value);
+            const height = parseInt(imageHeightInput.value);
+
+            const result = processImageForSprite(loadedImage, width, height, imageDitherMode.value, imageScaleMode.value);
+
+            // Generate sprite code
+            generatedRawSprite = `img\`\n    ${result.makeCodeString.split('\n').join('\n    ')}\n    \``;
+            generatedSpriteCode = `let mySprite = sprites.create(${generatedRawSprite}, SpriteKind.Player)`;
+
+            imageSpriteCode.textContent = generatedSpriteCode;
+
+            // Update preview
+            const previewScale = Math.min(160 / width, 120 / height, 4);
+            
+            originalPreviewCanvas.width = width * previewScale;
+            originalPreviewCanvas.height = height * previewScale;
+            const origCtx = originalPreviewCanvas.getContext('2d');
+            origCtx.imageSmoothingEnabled = false;
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(loadedImage, 0, 0, width, height);
+            origCtx.drawImage(tempCanvas, 0, 0, originalPreviewCanvas.width, originalPreviewCanvas.height);
+
+            convertedPreviewCanvas.width = width * previewScale;
+            convertedPreviewCanvas.height = height * previewScale;
+            const convCtx = convertedPreviewCanvas.getContext('2d');
+            convCtx.imageSmoothingEnabled = false;
+            const convImg = new Image();
+            convImg.onload = () => {
+                convCtx.drawImage(convImg, 0, 0, convertedPreviewCanvas.width, convertedPreviewCanvas.height);
+            };
+            convImg.src = result.dataUrl;
+
+            // Stats
+            const codeSize = new Blob([generatedSpriteCode]).size;
+            imageOutputStats.textContent = `${width}×${height} pixels | ${(codeSize / 1024).toFixed(1)} KB`;
+
+            // Enable buttons
+            copyImageBtn.disabled = false;
+            copyRawSpriteBtn.disabled = false;
+            downloadImageBtn.disabled = false;
+
+            showImageStatus(`Converted! ${width}×${height} sprite ready`, 'success');
+        });
+
+        // Copy buttons
+        copyImageBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(generatedSpriteCode);
+                showImageStatus('Full sprite code copied!', 'success');
+            } catch (err) {
+                showImageStatus('Failed to copy', 'error');
+            }
+        });
+
+        copyRawSpriteBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(generatedRawSprite);
+                showImageStatus('img`` copied!', 'success');
+            } catch (err) {
+                showImageStatus('Failed to copy', 'error');
+            }
+        });
+
+        downloadImageBtn.addEventListener('click', () => {
+            const blob = new Blob([generatedSpriteCode], { type: 'text/typescript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'makecode-sprite.ts';
+            a.click();
+            URL.revokeObjectURL(url);
+            showImageStatus('Downloaded makecode-sprite.ts', 'success');
+        });
+
         // Initialize
-        initPalettePreview('palettePreview');
-        initPalettePreview('imagePalettePreview');
+        initPalettePreview();
+        initImagePalettePreview();
         initFreqBuckets();
         
         window.addEventListener('resize', () => {
